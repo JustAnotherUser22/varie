@@ -10,7 +10,7 @@
 */
 #include "TestIR.h"
 #include "Conversion.h"
-
+#include "IncludeLib.h"
 
 
 
@@ -25,8 +25,9 @@ int main(int argc, char *argv[])
 {
 	//ComparazioneMisure();
 	
-	testConversion();
+	//testConversion();
 	
+	myPrint();
 	
 	return 0;
 }

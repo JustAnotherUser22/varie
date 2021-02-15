@@ -4,8 +4,8 @@
 CPP      = g++.exe -D__DEBUG__
 CC       = gcc.exe -D__DEBUG__
 WINDRES  = windres.exe
-OBJ      = main.o MyString.o Data.o Conversion.o Varie.o MyFile.o Array.o TimeAlgo.o client.o MyExtern.o TestIr.o
-LINKOBJ  = main.o MyString.o Data.o Conversion.o Varie.o MyFile.o Array.o TimeAlgo.o client.o MyExtern.o TestIr.o
+OBJ      = main.o MyString.o Data.o Conversion.o Varie.o MyFile.o Array.o TimeAlgo.o client.o MyExtern.o TestIr.o IncludeLib.o
+LINKOBJ  = main.o MyString.o Data.o Conversion.o Varie.o MyFile.o Array.o TimeAlgo.o client.o MyExtern.o TestIr.o IncludeLib.o
 LIBS     = -L"D:/Dev-Cpp/MinGW64/lib" -L"D:/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -g3
 INCS     = -I"D:/Dev-Cpp/MinGW64/include" -I"D:/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"D:/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
 CXXINCS  = -I"D:/Dev-Cpp/MinGW64/include" -I"D:/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"D:/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"D:/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
@@ -56,3 +56,6 @@ MyExtern.o: MyExtern.c
 
 TestIr.o: TestIr.c
 	$(CC) -c TestIr.c -o TestIr.o $(CFLAGS)
+
+IncludeLib.o: IncludeLib.c
+	$(CC) -c IncludeLib.c -o IncludeLib.o $(CFLAGS)
