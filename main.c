@@ -1,33 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "TimeAlgo.h"
-/*#include "MyFile.h"
-#include "MyExtern.h"
-#include "Varie.h"
-#include "Array.h"
-#include "MyString.h"
-*/
 #include "TestIR.h"
-#include "Conversion.h"
-#include "IncludeLib.h"
-
-
-
-extern a;
-
-/* run this program using the console pauser or add your own getch, system("pause") or input loop */
-
-
+#include "MyUnion.h"
+//#include <stdint.h>
 
 
 int main(int argc, char *argv[])
 {
-	//ComparazioneMisure();
+	//IRTX_Send(IR_CMD_ON, DEF_MODEL_GREE);
 	
-	//testConversion();
+	ConvertFromAnalysIRUsingFile();
 	
-	myPrint();
+	//testUnion();
+	//FromAnalysIR2Frame();
+		
+	//int n = 0x03;
+	//ConvertByte(n);
+	//ComputeChecksumTest();
 	
+	//ConvertFromAnalysIR();
+		
 	return 0;
 }
