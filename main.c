@@ -10,7 +10,8 @@ int main(int argc, char *argv[])
 {
 	//IRTX_Send(IR_CMD_ON, DEF_MODEL_GREE);
 	
-	ConvertFromAnalysIRUsingFile();
+	//ConvertFromAnalysIRUsingFile();
+	TestObjToState();
 	
 	//testUnion();
 	//FromAnalysIR2Frame();

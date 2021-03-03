@@ -11,10 +11,24 @@ struct Table t[] =
 {
 	{DEF_MODEL_GREE, IR_CMD_ON, &builtFrame},
 	{DEF_MODEL_GREE, IR_CMD_OFF, &placeholder},
-	{DEF_MODEL_GREE, IR_CMD_TIMER, &placeholder},
 	{DEF_MODEL_HAIER, IR_CMD_ON, &placeholder},
 	{DEF_MODEL_HAIER, IR_CMD_OFF, &placeholder},
-	{DEF_MODEL_HAIER, IR_CMD_TIMER, &placeholder},
+	
+	//comandi chiesti dal cliente
+	{DEF_MODEL_GREE, IR_CMD_CHANGE_MODE, &placeholder},
+	{DEF_MODEL_GREE, IR_CMD_CHANGE_FAN, &placeholder},
+	{DEF_MODEL_GREE, IR_CMD_CHANGE_SET_POINT, &placeholder},
+	{DEF_MODEL_GREE, IR_CMD_ON_OFF, &placeholder},
+	{DEF_MODEL_GREE, IR_CMD_SET_QUIET_MODE, &placeholder},
+	
+	{DEF_MODEL_HAIER, IR_CMD_CHANGE_MODE, &placeholder},
+	{DEF_MODEL_HAIER, IR_CMD_CHANGE_FAN, &placeholder},
+	{DEF_MODEL_HAIER, IR_CMD_CHANGE_SET_POINT, &placeholder},
+	{DEF_MODEL_HAIER, IR_CMD_ON_OFF, &placeholder},
+	{DEF_MODEL_HAIER, IR_CMD_SET_QUIET_MODE, &placeholder},
+	
+	
+	
 	{NO_MODEL, NO_CMD, &placeholder},
 };
 
@@ -70,7 +84,7 @@ struct State s =
 //FUNZIONI PUBBLICHE
 ///////////////////////////////////////////////////////////////////////////////////////
 
-void IRTX_Send(IR_CMD cmd, IR_MODEL model /*, IRobj* obj*/)
+void IRTX_Send(IR_CMD cmd, IR_MODEL model, settings_List_t* obj)
 {
 	int8_t counter = 0;
 	int8_t* payload; 
@@ -81,6 +95,8 @@ void IRTX_Send(IR_CMD cmd, IR_MODEL model /*, IRobj* obj*/)
 	oppure
 	FromObjToState(&obj, &state);
 	*/
+	
+	struct State s = FromObjToState(obj);
 	
 	for (counter = 0; t[counter].model != NO_MODEL; counter++)
 	{
@@ -102,6 +118,132 @@ void IRTX_Send(IR_CMD cmd, IR_MODEL model /*, IRobj* obj*/)
 ////////////////////////////////////////////////////////////////////////////////////////
 //FUNZIONI LOCALI
 ///////////////////////////////////////////////////////////////////////////////////////
+
+struct State FromObjToState(settings_List_t* obj)
+{
+	struct State s;
+	
+	
+	if(obj->hvacir_ifeel_enabled)
+		s.ifeel = IFEEL_ON;
+	else
+		s.ifeel = IFEEL_OFF;
+	
+	if(obj->hvacir_light_enabled)
+		s.light = LIGHT_ON;
+	else
+		s.light = LIGHT_OFF;
+	
+	if(obj->hvacir_purification_enabled)
+		s.modalitaDepurazione = DEPURAZIONE_ON;
+	else
+		s.modalitaDepurazione = DEPURAZIONE_OFF;
+		
+	if(obj->hvacir_sanitization_enabled)
+		s.modalitaSanificazione = SANIFICAZIONE_ON;
+	else
+		s.modalitaSanificazione = SANIFICAZIONE_OFF;
+		
+	if(obj->hvacir_swing_enabled)
+		s.swing = SWING_ON;
+	else
+		s.swing = SWING_OFF;
+	
+	if(obj->hvacir_turbo_enabled)
+		s.turbo = TURBO_ON;
+	else
+		s.turbo = TURBO_OFF;
+		
+	if(obj->hvacir_wifi_enabled)
+		s.wifi = WIFI_ON;
+	else
+		s.wifi = WIFI_OFF;	
+		
+		
+
+	
+	
+	if (obj->hvacir_sys_mode == HVACIR_DEF_SYS_MODE_OFF)
+	{
+		s.mode = MODE_AUTO;
+		s.temperatura = ConvertObjTemperatureToStateTemperature(obj->hvacir_ambient_heating_setpoint);	//TODO: controlla questa conversione
+	}
+	if (obj->hvacir_sys_mode == HVACIR_DEF_SYS_MODE_AUTO)
+	{
+		s.mode = MODE_AUTO;
+		//TODO: controlla che temperatura viene inviata in questo caso
+	}
+	if (obj->hvacir_sys_mode == HVACIR_DEF_SYS_MODE_COOLING)
+	{
+		s.mode = MODE_REFFRESCAMENTO;
+		s.temperatura = ConvertObjTemperatureToStateTemperature(obj->hvacir_ambient_cooling_setpoint);	//TODO: controlla questa conversione
+	}
+	if (obj->hvacir_sys_mode == HVACIR_DEF_SYS_MODE_HEATING)
+	{
+		s.mode = MODE_RISCALDAMENTO;
+		s.temperatura = ConvertObjTemperatureToStateTemperature(obj->hvacir_ambient_heating_setpoint);	//TODO: controlla questa conversione
+	}
+	if (obj->hvacir_sys_mode == HVACIR_DEF_SYS_MODE_FAN_ONLY)
+	{
+		s.mode = MODE_VENTILAZIONE;
+		//in questo caso la temperatura inviata è un parametro inutile
+		s.temperatura = 0;
+	}
+	if (obj->hvacir_sys_mode == HVACIR_DEF_SYS_MODE_DRY)
+	{
+		s.mode = MODE_DEUMIDIFICAZIONE;
+		s.temperatura = ConvertObjTemperatureToStateTemperature(obj->hvacir_ambient_cooling_setpoint - 16);	//TODO: controlla questa conversione
+	}
+		
+		
+	//TODO controlla velocità nel caso a 3 opzioni
+	if (obj->hvacir_fan_mode == HVACIR_DEF_FAN_MODE_LOW)	
+	{
+		s.fan = FAN_LIVELLO_1;
+		s.fan_ID7 = FAN_LIVELLO_1;
+	}
+	if (obj->hvacir_fan_mode == HVACIR_DEF_FAN_MODE_MID)	
+	{
+		s.fan = FAN_LIVELLO_3;
+		s.fan_ID7 = FAN_LIVELLO_3;
+	}
+	if (obj->hvacir_fan_mode == HVACIR_DEF_FAN_MODE_HIGH)	
+	{
+		s.fan = FAN_LIVELLO_3;
+		s.fan_ID7 = FAN_LIVELLO_5;
+	}
+	if (obj->hvacir_fan_mode == HVACIR_DEF_FAN_MODE_AUTO)	
+	{
+		s.fan = FAN_AUTO;
+		s.fan_ID7 = FAN_AUTO;
+	}
+	if (obj->hvacir_fan_mode == HVACIR_DEF_FAN_MODE_SILENT)	
+	{
+		s.fan = 0;	//TBD
+		s.fan_ID7 = 0;	//TBD
+	}
+	
+	
+	//TODO: queste funzionano perchè sono stati usati gli stessi valori del protocollo per l'hvacir
+	//forse è meglio dividere i due casi, da concordare
+	s.paletteOrizzontali = obj->hvacir_horizontal_swing_mode;
+	s.paletteVerticali = obj->hvacir_vertical_swing_mode;
+	s.quiet = obj->hvacir_quiet_mode;
+	
+	s.sleepBitZero = obj->hvacir_sleep_mode;
+	s.sleepBitUno = obj->hvacir_sleep_mode >> 1;
+	
+	
+	
+	
+	return s;
+}
+
+uint8_t ConvertObjTemperatureToStateTemperature(int16_t objTemperature)
+{
+	return (uint8_t) (objTemperature - 16);
+}
+
 
 uint8_t buildPacket5Byte0(struct State state)
 {
@@ -549,6 +691,44 @@ int8_t* TurnOn_cb(struct State state)
 ////////////////////////////////////////////////////////////////////////////////////////
 //FUNZIONI DI TEST
 ///////////////////////////////////////////////////////////////////////////////////////
+
+void TestObjToState()
+{
+	settings_List_t obj = {
+		.hvacir_ifeel_enabled = true,
+		.hvacir_light_enabled = true,
+    	.hvacir_purification_enabled = true,
+    	.hvacir_sanitization_enabled = true,
+    	.hvacir_swing_enabled = true,
+    	.hvacir_turbo_enabled = true,
+    	.hvacir_wifi_enabled = true,
+    	.hvacir_fan_mode = HVACIR_DEF_FAN_MODE_LOW,
+    	//uint8_t         hvacir_fan_mode_sequence;	//parametro zigbee che non mi interessa
+    	/*.hvacir_horizontal_swing_mode = 
+    uint8_t         hvacir_quiet_mode;
+    uint8_t         hvacir_sleep_mode;
+    uint8_t         hvacir_sys_mode;
+    uint8_t         hvacir_last_on_sys_mode;
+    uint8_t         hvacir_temperature_view_mode;
+    uint8_t         hvacir_timer_mode;
+    uint8_t         hvacir_vertical_swing_mode;
+    int16_t         hvacir_ambient_heating_setpoint;		//setpoint da usare in caso riscaldamento
+    int16_t         hvacir_ambient_heating_setpoint_min;	//non mi serve
+    int16_t         hvacir_ambient_heating_setpoint_max;	//non mi serve
+    int16_t         hvacir_ambient_cooling_setpoint;		//setpoint da usare in caso raffreddamento e deumidificazione
+    int16_t         hvacir_ambient_cooling_setpoint_min;	//non mi serve
+    int16_t         hvacir_ambient_cooling_setpoint_max;	//non mi serve
+    int16_t         hvacir_sleep3_setpoints[8];
+    uint8_t         hvacir_on_timer_duration;
+    uint8_t         hvacir_off_timer_duration;
+	*/
+	};
+	
+	struct State localState;
+	//PrintState(&localState);
+	localState = FromObjToState(&obj);
+	PrintState(&localState);
+}
 
 void PrintState(struct State* state)
 {
@@ -1106,6 +1286,9 @@ void printMyArray(int8_t* v)
 		mask <<= 1;
 	}
 	printf ("0x%2X", tmp);
+	
+	
+	
 	
 	printf("\n");
 	

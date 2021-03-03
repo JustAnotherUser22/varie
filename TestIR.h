@@ -4,6 +4,8 @@
 
 //#include <stdint.h>
 
+#include <stdbool.h>
+
 
 #define uint8_t short unsigned int
 #define uint16_t unsigned int
@@ -15,6 +17,69 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 //ENUM E STRUCT LOCALI
 ///////////////////////////////////////////////////////////////////////////////////////
+
+
+// da HvacIr.h
+enum
+{
+    HVACIR_DEF_SYS_MODE_OFF=0,
+    HVACIR_DEF_SYS_MODE_AUTO=1,
+    HVACIR_DEF_SYS_MODE_COOLING=3,
+    HVACIR_DEF_SYS_MODE_HEATING=4,
+    HVACIR_DEF_SYS_MODE_FAN_ONLY=7,
+    HVACIR_DEF_SYS_MODE_DRY=8
+};
+
+enum
+{
+    HVACIR_DEF_FAN_MODE_LOW=1,
+    HVACIR_DEF_FAN_MODE_MID=2,
+    HVACIR_DEF_FAN_MODE_HIGH=3,
+    HVACIR_DEF_FAN_MODE_AUTO=5,
+    HVACIR_DEF_FAN_MODE_SILENT=16
+};
+
+enum
+{
+    HVACIR_DEF_QUIET_MODE_OFF=0,
+    HVACIR_DEF_QUIET_MODE_AUTO,
+    HVACIR_DEF_QUIET_MODE_ON
+};
+
+
+
+
+//obj proveniente dall'alto (vedi file Settings.h)
+typedef struct
+{
+    bool            hvacir_ifeel_enabled;
+    bool            hvacir_light_enabled;
+    bool            hvacir_purification_enabled;
+    bool            hvacir_sanitization_enabled;
+    bool            hvacir_swing_enabled;
+    bool            hvacir_turbo_enabled;
+    bool            hvacir_wifi_enabled;
+    uint8_t         hvacir_fan_mode;
+    uint8_t         hvacir_fan_mode_sequence;	//parametro zigbee che non mi interessa
+    uint8_t         hvacir_horizontal_swing_mode;
+    uint8_t         hvacir_quiet_mode;
+    uint8_t         hvacir_sleep_mode;
+    uint8_t         hvacir_sys_mode;
+    uint8_t         hvacir_last_on_sys_mode;
+    uint8_t         hvacir_temperature_view_mode;
+    uint8_t         hvacir_timer_mode;
+    uint8_t         hvacir_vertical_swing_mode;
+    int16_t         hvacir_ambient_heating_setpoint;		//setpoint da usare in caso riscaldamento
+    int16_t         hvacir_ambient_heating_setpoint_min;	//non mi serve
+    int16_t         hvacir_ambient_heating_setpoint_max;	//non mi serve
+    int16_t         hvacir_ambient_cooling_setpoint;		//setpoint da usare in caso raffreddamento e deumidificazione
+    int16_t         hvacir_ambient_cooling_setpoint_min;	//non mi serve
+    int16_t         hvacir_ambient_cooling_setpoint_max;	//non mi serve
+    int16_t         hvacir_sleep3_setpoints[8];
+    uint8_t         hvacir_on_timer_duration;
+    uint8_t         hvacir_off_timer_duration;
+}settings_List_t;
+
 
 //lista dei possibili modelli di telecomando supportati dal programma
 typedef enum 
@@ -30,31 +95,18 @@ typedef enum
 {
 	IR_CMD_ON,
 	IR_CMD_OFF,
-	IR_CMD_TIMER,
+
 	IR_CMD_SET_MODE,
-	IR_CMD_SET_FAN,
-	IR_CMD_SET_SWING,
+
+
 	IR_CMD_SET_TEMPERATURE,
-	IR_CMD_SET_TURBO,
-	IR_CMD_SET_LIGHT,
-	IR_CMD_SET_SANIFICAZIONE,
-	IR_CMD_SET_DEPURAZIONE,
-	IR_CMD_SET_PALETTE_ORIZZONTALI,
-	IR_CMD_SET_PALETTE_VERTICALI,
-	IR_CMD_SET_TEMP,
-	IR_CMD_SET_IFEEL,
-	IR_CMD_SET_TIMER_ON,
-	IR_CMD_SET_TIMER_OFF,
-	IR_CMD_SET_QUIET,
-	IR_CMD_SET_SLEEP_3_ORA_1_TEMPERATURA,
-	IR_CMD_SET_SLEEP_3_ORA_2_TEMPERATURA,
-	IR_CMD_SET_FAN_ID7,
-	IR_CMD_SET_SLEEP_3_ORA_3_TEMPERATURA,
-	IR_CMD_SET_SLEEP_3_ORA_4_TEMPERATURA,
-	IR_CMD_SET_SLEEP_3_ORA_5_TEMPERATURA,
-	IR_CMD_SET_SLEEP_3_ORA_6_TEMPERATURA,
-	IR_CMD_SET_SLEEP_3_ORA_7_TEMPERATURA,
-	IR_CMD_SET_SLEEP_3_ORA_8_TEMPERATURA,
+	
+	//comandi richiesti dal cliente
+	IR_CMD_CHANGE_MODE,
+	IR_CMD_CHANGE_FAN,
+	IR_CMD_CHANGE_SET_POINT,
+	IR_CMD_ON_OFF,
+	IR_CMD_SET_QUIET_MODE,
 	
 	NO_CMD
 }IR_CMD;
@@ -136,8 +188,11 @@ enum
 	FAN_AUTO = 0X0,
 	FAN_LIVELLO_1,
 	FAN_LIVELLO_2,
-	FAN_LIVELLO_3
+	FAN_LIVELLO_3,
+	FAN_LIVELLO_4,
+	FAN_LIVELLO_5
 };
+
 
 enum
 {
@@ -283,11 +338,14 @@ uint8_t totalFrameCounter;
 uint8_t payloadSize;
 
 //funzione da richiamare per inviare il comando desiderato tramite IR
-void IRTX_Send(IR_CMD cmd, IR_MODEL model/*, IRobj* obj*/);
+void IRTX_Send(IR_CMD cmd, IR_MODEL model, settings_List_t* obj);
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //FUNZIONI LOCALI
 ///////////////////////////////////////////////////////////////////////////////////////
+
+struct State FromObjToState(settings_List_t* obj);
+uint8_t ConvertObjTemperatureToStateTemperature(int16_t objTemperature);
 
 //funzioni per costruire i byte 0, 1 e 2 secondo il pacchetto con ID 5
 uint8_t buildPacket5Byte0(struct State state);
@@ -316,6 +374,7 @@ void LSB2MSB(int8_t* n);
 ////////////////////////////////////////////////////////////////////////////////////////
 //FUNZIONI DI TEST
 ///////////////////////////////////////////////////////////////////////////////////////
+void TestObjToState();
 
 void PrintState(struct State* state);
 void printAllData();
