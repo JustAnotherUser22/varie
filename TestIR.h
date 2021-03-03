@@ -1,12 +1,23 @@
+/**********************************************************************************************************************
+ *               COPYRIGHT NOTICE: (C) 2020, Astrel Group                                                             *
+ *               All rights reserved.                                                                                 *
+ **********************************************************************************************************************/
+
+
 
 #ifndef TESTIR_H
 #define TESTIR_H
 
-//#include <stdint.h>
+/**********************************************************************************************************************
+ *  1. Include files                                                                                                  *
+ **********************************************************************************************************************/
 
+//#include <stdint.h>
 #include <stdbool.h>
 
-
+/**********************************************************************************************************************
+ *  2. Defines                                                                                                        *
+ **********************************************************************************************************************/
 #define uint8_t short unsigned int
 #define uint16_t unsigned int
 #define uint32_t long unsigned int
@@ -14,10 +25,13 @@
 #define int16_t int
 #define int32_t long int
 
-////////////////////////////////////////////////////////////////////////////////////////
-//ENUM E STRUCT LOCALI
-///////////////////////////////////////////////////////////////////////////////////////
+/**********************************************************************************************************************
+ *  3. Macros                                                                                                         *
+ **********************************************************************************************************************/
 
+/**********************************************************************************************************************
+ *  4. Enum  (da cancellare perchè copiate dal file sul server                                                                                                         *
+ **********************************************************************************************************************/
 
 // da HvacIr.h
 enum
@@ -45,9 +59,6 @@ enum
     HVACIR_DEF_QUIET_MODE_AUTO,
     HVACIR_DEF_QUIET_MODE_ON
 };
-
-
-
 
 //obj proveniente dall'alto (vedi file Settings.h)
 typedef struct
@@ -80,93 +91,9 @@ typedef struct
     uint8_t         hvacir_off_timer_duration;
 }settings_List_t;
 
-
-//lista dei possibili modelli di telecomando supportati dal programma
-typedef enum 
-{
-	DEF_MODEL_GREE,
-	DEF_MODEL_HAIER,
-	
-	NO_MODEL
-}IR_MODEL;
-
-//lista dei comandi supportati dai vari modelli
-typedef enum 
-{
-	IR_CMD_ON,
-	IR_CMD_OFF,
-
-	IR_CMD_SET_MODE,
-
-
-	IR_CMD_SET_TEMPERATURE,
-	
-	//comandi richiesti dal cliente
-	IR_CMD_CHANGE_MODE,
-	IR_CMD_CHANGE_FAN,
-	IR_CMD_CHANGE_SET_POINT,
-	IR_CMD_ON_OFF,
-	IR_CMD_SET_QUIET_MODE,
-	
-	NO_CMD
-}IR_CMD;
-
-
-typedef struct 
-{
-	IR_MODEL model;
-	IR_CMD command;
-	int8_t* (*build_callback)();	//puntatore a una funzione che ritorna un vettore di int e non vuole argomenti
-}Table;
-
-
-typedef struct 
-{
-	//per pacchetto ID5
-	uint8_t mode:3;
-	uint8_t power:1;
-	uint8_t fan:2;
-	uint8_t swing:1;
-	uint8_t sleepBitZero:1;
-	
-	uint8_t temperatura:4;
-	uint8_t wifi:1;
-	uint8_t timer:3;
-	
-	uint8_t TBD:4;
-	uint8_t turbo:1;
-	uint8_t light:1;
-	uint8_t modalitaSanificazione:1;
-	uint8_t modalitaDepurazione:1;
-	
-	uint8_t paletteVerticali:4;
-	uint8_t paletteOrizzontali:4;
-	
-	uint8_t temp:2;
-	uint8_t ifeel:1;
-	
-	//per pacchetto ID6
-	uint8_t sleepBitUno:1;
-	uint8_t quiet:2;
-	uint16_t timer_ON:11;
-	uint16_t timer_OFF:11;
-	uint8_t timer_ON_enable:1;
-	uint8_t timer_OFF_enable:1;
-	
-	//per pacchetto ID7
-	uint8_t sleep_3_ora_1_temperatura:4;
-	uint8_t sleep_3_ora_2_temperatura:4;	
-	uint8_t fan_ID7:4;	
-	
-	//per pacchetto ID8
-	uint8_t sleep_3_ora_3_temperatura:4;
-	uint8_t sleep_3_ora_4_temperatura:4;
-	uint8_t sleep_3_ora_5_temperatura:4;
-	uint8_t sleep_3_ora_6_temperatura:4;
-	uint8_t sleep_3_ora_7_temperatura:4;
-	uint8_t sleep_3_ora_8_temperatura:4;
-}State;
-
+/**********************************************************************************************************************
+ *  4. Enum                                                                                                           *
+ **********************************************************************************************************************/
 
 enum 
 {
@@ -324,10 +251,106 @@ enum
 };
 
 
+/**********************************************************************************************************************
+ *  5. Structures                                                                                                     *
+ **********************************************************************************************************************/
 
-////////////////////////////////////////////////////////////////////////////////////////
-//FUNZIONI E VARIABILI PUBBLICHE
-///////////////////////////////////////////////////////////////////////////////////////
+/**********************************************************************************************************************
+ *  6. Type definitions                                                                                               *
+ **********************************************************************************************************************/
+
+//lista dei possibili modelli di telecomando supportati dal programma
+typedef enum 
+{
+	DEF_MODEL_GREE,
+	DEF_MODEL_HAIER,
+	
+	NO_MODEL
+}IR_MODEL;
+
+//lista dei comandi supportati dai vari modelli
+typedef enum 
+{
+	IR_CMD_ON,
+	IR_CMD_OFF,
+
+	IR_CMD_SET_MODE,
+
+
+	IR_CMD_SET_TEMPERATURE,
+	
+	//comandi richiesti dal cliente
+	IR_CMD_CHANGE_MODE,
+	IR_CMD_CHANGE_FAN,
+	IR_CMD_CHANGE_SET_POINT,
+	IR_CMD_ON_OFF,
+	IR_CMD_SET_QUIET_MODE,
+	
+	NO_CMD
+}IR_CMD;
+
+
+typedef struct 
+{
+	IR_MODEL model;
+	IR_CMD command;
+	int8_t* (*build_callback)();	//puntatore a una funzione che ritorna un vettore di int e non vuole argomenti
+}Table;
+
+
+typedef struct 
+{
+	//per pacchetto ID5
+	uint8_t mode:3;
+	uint8_t power:1;
+	uint8_t fan:2;
+	uint8_t swing:1;
+	uint8_t sleepBitZero:1;
+	
+	uint8_t temperatura:4;
+	uint8_t wifi:1;
+	uint8_t timer:3;
+	
+	uint8_t TBD:4;
+	uint8_t turbo:1;
+	uint8_t light:1;
+	uint8_t modalitaSanificazione:1;
+	uint8_t modalitaDepurazione:1;
+	
+	uint8_t paletteVerticali:4;
+	uint8_t paletteOrizzontali:4;
+	
+	uint8_t temp:2;
+	uint8_t ifeel:1;
+	
+	//per pacchetto ID6
+	uint8_t sleepBitUno:1;
+	uint8_t quiet:2;
+	uint16_t timer_ON:11;
+	uint16_t timer_OFF:11;
+	uint8_t timer_ON_enable:1;
+	uint8_t timer_OFF_enable:1;
+	
+	//per pacchetto ID7
+	uint8_t sleep_3_ora_1_temperatura:4;
+	uint8_t sleep_3_ora_2_temperatura:4;	
+	uint8_t fan_ID7:4;	
+	
+	//per pacchetto ID8
+	uint8_t sleep_3_ora_3_temperatura:4;
+	uint8_t sleep_3_ora_4_temperatura:4;
+	uint8_t sleep_3_ora_5_temperatura:4;
+	uint8_t sleep_3_ora_6_temperatura:4;
+	uint8_t sleep_3_ora_7_temperatura:4;
+	uint8_t sleep_3_ora_8_temperatura:4;
+}State;
+
+
+
+
+/**********************************************************************************************************************
+ * 7. public variables                                                                          *
+ **********************************************************************************************************************/
 
 //array da passare alla funzione che comanda il pin del modulo IR per inviare dati
 //accetta valori dell'enum sopra
@@ -337,12 +360,18 @@ uint8_t totalFrameCounter;
 //variabile globale che contiene la dimensione del payload generato dai byte da inviare
 uint8_t payloadSize;
 
+
+/**********************************************************************************************************************
+ * 8. Global function definitions (public)                                                                           *
+ **********************************************************************************************************************/
+
 //funzione da richiamare per inviare il comando desiderato tramite IR
 void IRTX_Send(IR_CMD cmd, IR_MODEL model, settings_List_t* obj);
 
-////////////////////////////////////////////////////////////////////////////////////////
-//FUNZIONI LOCALI
-///////////////////////////////////////////////////////////////////////////////////////
+
+/**********************************************************************************************************************
+ * 9. Global function definitions (private)                                                                           *
+ **********************************************************************************************************************/
 
 State FromObjToState(settings_List_t* obj);
 uint8_t ConvertObjTemperatureToStateTemperature(int16_t objTemperature);
@@ -371,9 +400,10 @@ void ConvertByteToBinary(int8_t* v, int position);
 int8_t* TurnOn_cb(State state);
 void LSB2MSB(int8_t* n);
 
-////////////////////////////////////////////////////////////////////////////////////////
-//FUNZIONI DI TEST
-///////////////////////////////////////////////////////////////////////////////////////
+
+/**********************************************************************************************************************
+ * 10. Global function definitions (private, only for test)                                                                           *
+ **********************************************************************************************************************/
 void TestObjToState();
 
 void PrintState(State* state);
@@ -393,5 +423,6 @@ int IsOne(uint8_t* v);
 int IsZero(uint8_t* v);
 int IsPause(uint8_t* v);
 int IsEnd(uint8_t* v);
+
 
 #endif

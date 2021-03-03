@@ -1,11 +1,32 @@
+/**********************************************************************************************************************
+ *               COPYRIGHT NOTICE: (C) 2020, Astrel Group                                                             *
+ *               All rights reserved.                                                                                 *
+ **********************************************************************************************************************/
+
+
+/**********************************************************************************************************************
+ *  1. Include files                                                                                                  *
+ **********************************************************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include "TestIR.h"
 //#include <stdint.h>
 
-////////////////////////////////////////////////////////////////////////////////////////
-//VARIABILI LOCALI
-///////////////////////////////////////////////////////////////////////////////////////
+/**********************************************************************************************************************
+ *  2. Defines                                                                                                        *
+ **********************************************************************************************************************/
+
+/**********************************************************************************************************************
+ *  3. Macros                                                                                                         *
+ **********************************************************************************************************************/
+
+/**********************************************************************************************************************
+ *  4. Enum                                                                                                           *
+ **********************************************************************************************************************/
+
+/**********************************************************************************************************************
+ *  5. Structures                                                                                                     *
+ **********************************************************************************************************************/
 
 Table t[] = 
 {
@@ -15,11 +36,11 @@ Table t[] =
 	{DEF_MODEL_HAIER, IR_CMD_OFF, &placeholder},
 	
 	//comandi chiesti dal cliente
-	{DEF_MODEL_GREE, IR_CMD_CHANGE_MODE, &placeholder},
-	{DEF_MODEL_GREE, IR_CMD_CHANGE_FAN, &placeholder},
-	{DEF_MODEL_GREE, IR_CMD_CHANGE_SET_POINT, &placeholder},
-	{DEF_MODEL_GREE, IR_CMD_ON_OFF, &placeholder},
-	{DEF_MODEL_GREE, IR_CMD_SET_QUIET_MODE, &placeholder},
+	{DEF_MODEL_GREE, IR_CMD_CHANGE_MODE, &builtFrame},
+	{DEF_MODEL_GREE, IR_CMD_CHANGE_FAN, &builtFrame},
+	{DEF_MODEL_GREE, IR_CMD_CHANGE_SET_POINT, &builtFrame},
+	{DEF_MODEL_GREE, IR_CMD_ON_OFF, &builtFrame},
+	{DEF_MODEL_GREE, IR_CMD_SET_QUIET_MODE, &builtFrame},
 	
 	{DEF_MODEL_HAIER, IR_CMD_CHANGE_MODE, &placeholder},
 	{DEF_MODEL_HAIER, IR_CMD_CHANGE_FAN, &placeholder},
@@ -79,11 +100,16 @@ State s =
 	.sleep_3_ora_8_temperatura = TEMP_23,
 };
 
+/**********************************************************************************************************************
+ *  6. Type definitions                                                                                               *
+ **********************************************************************************************************************/
 
-////////////////////////////////////////////////////////////////////////////////////////
-//FUNZIONI PUBBLICHE
-///////////////////////////////////////////////////////////////////////////////////////
 
+
+
+/**********************************************************************************************************************
+ * 8. Global function definitions (public)                                                                           *
+ **********************************************************************************************************************/
 void IRTX_Send(IR_CMD cmd, IR_MODEL model, settings_List_t* obj)
 {
 	int8_t counter = 0;
@@ -105,6 +131,17 @@ void IRTX_Send(IR_CMD cmd, IR_MODEL model, settings_List_t* obj)
 	if(payload)
 		IR_TRANSMIT(payload, model);
 }
+
+
+
+
+/**********************************************************************************************************************
+ * 9. Global function definitions (private)                                                                           *
+ **********************************************************************************************************************/
+
+
+
+
 
 
 
@@ -674,10 +711,13 @@ int8_t* TurnOn_cb(State state)
  	printf("fine n = %x \n", (*n)); 	
  }
 
-////////////////////////////////////////////////////////////////////////////////////////
-//FUNZIONI DI TEST
-///////////////////////////////////////////////////////////////////////////////////////
 
+
+
+/**********************************************************************************************************************
+ * 10. Global function definitions (private, only for test)                                                                           *
+ **********************************************************************************************************************/
+ 
 void TestObjToState()
 {
 	settings_List_t obj = {
@@ -691,23 +731,23 @@ void TestObjToState()
     	.hvacir_fan_mode = HVACIR_DEF_FAN_MODE_LOW,
     	//uint8_t         hvacir_fan_mode_sequence;	//parametro zigbee che non mi interessa
     	/*.hvacir_horizontal_swing_mode = 
-    uint8_t         hvacir_quiet_mode;
-    uint8_t         hvacir_sleep_mode;
-    uint8_t         hvacir_sys_mode;
-    uint8_t         hvacir_last_on_sys_mode;
-    uint8_t         hvacir_temperature_view_mode;
-    uint8_t         hvacir_timer_mode;
-    uint8_t         hvacir_vertical_swing_mode;
-    int16_t         hvacir_ambient_heating_setpoint;		//setpoint da usare in caso riscaldamento
-    int16_t         hvacir_ambient_heating_setpoint_min;	//non mi serve
-    int16_t         hvacir_ambient_heating_setpoint_max;	//non mi serve
-    int16_t         hvacir_ambient_cooling_setpoint;		//setpoint da usare in caso raffreddamento e deumidificazione
-    int16_t         hvacir_ambient_cooling_setpoint_min;	//non mi serve
-    int16_t         hvacir_ambient_cooling_setpoint_max;	//non mi serve
-    int16_t         hvacir_sleep3_setpoints[8];
-    uint8_t         hvacir_on_timer_duration;
-    uint8_t         hvacir_off_timer_duration;
-	*/
+    	.hvacir_quiet_mode =
+    	.hvacir_sleep_mode =
+    	.hvacir_sys_mode =
+    	.hvacir_last_on_sys_mode =
+    	.hvacir_temperature_view_mode =
+    	.hvacir_timer_mode =
+    	.hvacir_vertical_swing_mode =
+    	.hvacir_ambient_heating_setpoint = 30,		//setpoint da usare in caso riscaldamento
+    //int16_t         hvacir_ambient_heating_setpoint_min;	//non mi serve
+    //int16_t         hvacir_ambient_heating_setpoint_max;	//non mi serve
+    	.hvacir_ambient_cooling_setpoint = 20,		//setpoint da usare in caso raffreddamento e deumidificazione
+    //int16_t         hvacir_ambient_cooling_setpoint_min;	//non mi serve
+    //int16_t         hvacir_ambient_cooling_setpoint_max;	//non mi serve
+    	//.hvacir_sleep3_setpoints[8]
+    	//.hvacir_on_timer_duration;
+    	//.hvacir_off_timer_duration;
+    	*/
 	};
 	
 	State localState;
