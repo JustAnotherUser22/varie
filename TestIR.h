@@ -12,18 +12,18 @@
  *  1. Include files                                                                                                  *
  **********************************************************************************************************************/
 
-//#include <stdint.h>
+#include <stdint.h>
 #include <stdbool.h>
 
 /**********************************************************************************************************************
  *  2. Defines                                                                                                        *
  **********************************************************************************************************************/
-#define uint8_t short unsigned int
+/*#define uint8_t short unsigned int
 #define uint16_t unsigned int
 #define uint32_t long unsigned int
 #define int8_t short int
 #define int16_t int
-#define int32_t long int
+#define int32_t long int*/
 
 /**********************************************************************************************************************
  *  3. Macros                                                                                                         *
@@ -418,11 +418,11 @@ void printMyArray(int8_t* v);
 
 //funzioni di decodifica della trama
 void ConvertFromAnalysIR();
-int IsPreamble(uint8_t* v);
-int IsOne(uint8_t* v);
-int IsZero(uint8_t* v);
-int IsPause(uint8_t* v);
-int IsEnd(uint8_t* v);
+int IsPreamble(uint16_t* v);
+int IsOne(uint16_t* v);
+int IsZero(uint16_t* v);
+int IsPause(uint16_t* v);
+int IsEnd(uint16_t* v);
 
 
 #endif
