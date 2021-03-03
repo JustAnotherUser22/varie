@@ -112,15 +112,15 @@ typedef enum
 }IR_CMD;
 
 
-struct Table
+typedef struct 
 {
 	IR_MODEL model;
 	IR_CMD command;
 	int8_t* (*build_callback)();	//puntatore a una funzione che ritorna un vettore di int e non vuole argomenti
-};
+}Table;
 
 
-struct State
+typedef struct 
 {
 	//per pacchetto ID5
 	uint8_t mode:3;
@@ -165,7 +165,7 @@ struct State
 	uint8_t sleep_3_ora_6_temperatura:4;
 	uint8_t sleep_3_ora_7_temperatura:4;
 	uint8_t sleep_3_ora_8_temperatura:4;
-};
+}State;
 
 
 enum 
@@ -344,31 +344,31 @@ void IRTX_Send(IR_CMD cmd, IR_MODEL model, settings_List_t* obj);
 //FUNZIONI LOCALI
 ///////////////////////////////////////////////////////////////////////////////////////
 
-struct State FromObjToState(settings_List_t* obj);
+State FromObjToState(settings_List_t* obj);
 uint8_t ConvertObjTemperatureToStateTemperature(int16_t objTemperature);
 
 //funzioni per costruire i byte 0, 1 e 2 secondo il pacchetto con ID 5
-uint8_t buildPacket5Byte0(struct State state);
-uint8_t buildPacket5Byte1(struct State state);
-uint8_t buildPacket5Byte2(struct State state);
+uint8_t buildPacket5Byte0(State state);
+uint8_t buildPacket5Byte1(State state);
+uint8_t buildPacket5Byte2(State state);
 
 //funzioni per la costruzione dei pacchetti con l'ID indicato
-uint8_t* build_Gree_ID5_cb(struct State state);
-uint8_t* build_Gree_ID6_cb(struct State state);
-uint8_t* build_Gree_ID7_cb(struct State state);
-uint8_t* build_Gree_ID8_cb(struct State state);
-uint8_t* build_Gree_ID9_cb(struct State state);
-uint8_t* build_Gree_IDA_cb(struct State state);
+uint8_t* build_Gree_ID5_cb(State state);
+uint8_t* build_Gree_ID6_cb(State state);
+uint8_t* build_Gree_ID7_cb(State state);
+uint8_t* build_Gree_ID8_cb(State state);
+uint8_t* build_Gree_ID9_cb(State state);
+uint8_t* build_Gree_IDA_cb(State state);
 
 //funzione che costruisce il frame completo (costituito solo da '1' e '0')
-int8_t* builtFrame(struct State state);
+int8_t* builtFrame(State state);
 
 //funzione che crea il frame completo (con segnali di start, stop, pausa... dato il frame con soli '1' e '0' e il modello del telecomando)
 void IR_TRANSMIT(int8_t* p, IR_MODEL m);
 
 int8_t ComputeChecksum(int8_t b[]);
 void ConvertByteToBinary(int8_t* v, int position);
-int8_t* TurnOn_cb(struct State state);
+int8_t* TurnOn_cb(State state);
 void LSB2MSB(int8_t* n);
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -376,7 +376,7 @@ void LSB2MSB(int8_t* n);
 ///////////////////////////////////////////////////////////////////////////////////////
 void TestObjToState();
 
-void PrintState(struct State* state);
+void PrintState(State* state);
 void printAllData();
 int8_t ComputeChecksumTest();
 void ComparazioneMisure();

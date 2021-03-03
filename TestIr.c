@@ -7,7 +7,7 @@
 //VARIABILI LOCALI
 ///////////////////////////////////////////////////////////////////////////////////////
 
-struct Table t[] = 
+Table t[] = 
 {
 	{DEF_MODEL_GREE, IR_CMD_ON, &builtFrame},
 	{DEF_MODEL_GREE, IR_CMD_OFF, &placeholder},
@@ -33,7 +33,7 @@ struct Table t[] =
 };
 
 
-struct State s = 
+State s = 
 {
 	.mode = MODE_REFFRESCAMENTO,
 	.power = POWER_OFF,
@@ -88,15 +88,8 @@ void IRTX_Send(IR_CMD cmd, IR_MODEL model, settings_List_t* obj)
 {
 	int8_t counter = 0;
 	int8_t* payload; 
-	//PrintState(&s);
-	/*
-	da aggiungere funzione per convertire IRobj passato come argomento in una struct per popolare i vari bit
-	struct State s = FromObjToState(&obj);
-	oppure
-	FromObjToState(&obj, &state);
-	*/
 	
-	struct State s = FromObjToState(obj);
+	State state = FromObjToState(obj);
 	
 	for (counter = 0; t[counter].model != NO_MODEL; counter++)
 	{
@@ -119,9 +112,9 @@ void IRTX_Send(IR_CMD cmd, IR_MODEL model, settings_List_t* obj)
 //FUNZIONI LOCALI
 ///////////////////////////////////////////////////////////////////////////////////////
 
-struct State FromObjToState(settings_List_t* obj)
+State FromObjToState(settings_List_t* obj)
 {
-	struct State s;
+	State s;
 	
 	
 	if(obj->hvacir_ifeel_enabled)
@@ -245,24 +238,24 @@ uint8_t ConvertObjTemperatureToStateTemperature(int16_t objTemperature)
 }
 
 
-uint8_t buildPacket5Byte0(struct State state)
+uint8_t buildPacket5Byte0(State state)
 {
 	return (state.sleepBitZero << 7) | (state.swing << 6) | (state.fan << 4) | (state.power << 3) | state.mode;
 }
 
-uint8_t buildPacket5Byte1(struct State state)
+uint8_t buildPacket5Byte1(State state)
 {
 	return (state.timer << 5) | (state.wifi << 4) | state.temperatura;
 }
 
-uint8_t buildPacket5Byte2(struct State state)
+uint8_t buildPacket5Byte2(State state)
 {
 	return (state.modalitaSanificazione < 6) | (state.light << 5) | (state.turbo << 4) | state.TBD;
 }
 
 
 
-uint8_t* build_Gree_ID5_cb(struct State state)
+uint8_t* build_Gree_ID5_cb(State state)
 {
 	static uint8_t c[8];
 	
@@ -286,7 +279,7 @@ uint8_t* build_Gree_ID5_cb(struct State state)
 	return c;
 }
 
-uint8_t* build_Gree_ID6_cb(struct State state)
+uint8_t* build_Gree_ID6_cb(State state)
 {
 	static uint8_t c[8];
 	
@@ -310,7 +303,7 @@ uint8_t* build_Gree_ID6_cb(struct State state)
 	return c;
 }
 
-uint8_t* build_Gree_ID7_cb(struct State state)
+uint8_t* build_Gree_ID7_cb(State state)
 {
 	static uint8_t c[8];
 	
@@ -334,7 +327,7 @@ uint8_t* build_Gree_ID7_cb(struct State state)
 	return c;
 }
 
-uint8_t* build_Gree_ID8_cb(struct State state)
+uint8_t* build_Gree_ID8_cb(State state)
 {
 	static uint8_t c[8];
 	
@@ -358,7 +351,7 @@ uint8_t* build_Gree_ID8_cb(struct State state)
 	return c;
 }
 
-uint8_t* build_Gree_IDA_cb(struct State state)
+uint8_t* build_Gree_IDA_cb(State state)
 {
 	static uint8_t c[8];
 	
@@ -531,7 +524,7 @@ packet ID 0x07 -> sempre inviato
 packet ID 0x08 -> inviato solo in modalità sleep 3
 packet ID 0x0A -> sempre inviato (ultimo pacchetto) (??????????????)
 */
-int8_t* builtFrame(struct State state)
+int8_t* builtFrame(State state)
 {
 	/*
 	int8_t *firstFrame = build_Gree_ID5_cb(state);
@@ -575,13 +568,6 @@ int8_t* builtFrame(struct State state)
 	*/
 	
 	IR_CMD cmd = 0;
-	if(cmd == IR_CMD_ON)
-		state.power = POWER_ON;
-	else if(cmd == IR_CMD_OFF)
-		state.power	= POWER_OFF;
-	else if (cmd == IR_CMD_SET_TEMPERATURE)
-		//temperatura già settata nello "state"
-		;
 	
 	//lunghezza totale del pacchetto espressa in byte (ogni pacchetto è composto da 8 byte);
 	int8_t totalLength = 0;
@@ -651,7 +637,7 @@ int8_t* builtFrame(struct State state)
 
 
 //funzione che si occupa di creare il pacchetto nel caso di accensione
-int8_t* TurnOn_cb(struct State state)
+int8_t* TurnOn_cb(State state)
 {
 	//TODO: eventuale controllo nel caso in cui il nuovo stato sia uguale a quello attuale?
 	
@@ -724,13 +710,13 @@ void TestObjToState()
 	*/
 	};
 	
-	struct State localState;
+	State localState;
 	//PrintState(&localState);
 	localState = FromObjToState(&obj);
 	PrintState(&localState);
 }
 
-void PrintState(struct State* state)
+void PrintState(State* state)
 {
 	printf("mode:         %02X\n", state->mode);
 	printf("power:        %02X\n", state->power);
