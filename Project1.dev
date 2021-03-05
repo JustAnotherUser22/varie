@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=1
 CompilerSettings=0000000000000000001000000
-UnitCount=27
+UnitCount=29
 
 [VersionInfo]
 Major=1
@@ -312,6 +312,26 @@ BuildCmd=
 
 [Unit27]
 FileName=MyUnion.h
+CompileCpp=0
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit28]
+FileName=FunctionPointer.c
+CompileCpp=0
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit29]
+FileName=FunctionPointer.h
 CompileCpp=0
 Folder=
 Compile=1

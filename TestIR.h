@@ -3,15 +3,12 @@
  *               All rights reserved.                                                                                 *
  **********************************************************************************************************************/
 
-
-
 #ifndef TESTIR_H
 #define TESTIR_H
 
 /**********************************************************************************************************************
  *  1. Include files                                                                                                  *
  **********************************************************************************************************************/
-
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -33,15 +30,96 @@
  *  4. Enum  (da cancellare perchè copiate dal file sul server                                                                                                         *
  **********************************************************************************************************************/
 
-// da HvacIr.h
+// da HvacIrViessman.h
 enum
 {
-    HVACIR_DEF_SYS_MODE_OFF=0,
-    HVACIR_DEF_SYS_MODE_AUTO=1,
-    HVACIR_DEF_SYS_MODE_COOLING=3,
-    HVACIR_DEF_SYS_MODE_HEATING=4,
-    HVACIR_DEF_SYS_MODE_FAN_ONLY=7,
-    HVACIR_DEF_SYS_MODE_DRY=8
+    HVACIR_DEF_VIESSMANN_HORIZONTAL_SWING_MODE=0,
+    HVACIR_DEF_VIESSMANN_VERTICAL_SWING_MODE,
+    HVACIR_DEF_VIESSMANN_QUIET_MODE,
+    HVACIR_DEF_VIESSMANN_SLEEP_MODE,
+    HVACIR_DEF_VIESSMANN_TEMPERATURE_VIEW_MODE,
+    HVACIR_DEF_VIESSMANN_MODE_NUM
+};
+
+enum
+{
+    HVACIR_DEF_VIESSMANN_SETPOINT_SLEEP3,
+};
+
+enum
+{
+    HVACIR_DEF_VIESSMANN_FEATURE_IFEEL=0,
+    HVACIR_DEF_VIESSMANN_FEATURE_LIGHT,
+    HVACIR_DEF_VIESSMANN_FEATURE_PURIFICATION,
+    HVACIR_DEF_VIESSMANN_FEATURE_SANITIZATION,
+    HVACIR_DEF_VIESSMANN_FEATURE_WIFI,
+    HVACIR_DEF_VIESSMANN_FEATURE_NUM
+};
+
+enum
+{
+    HVACIR_DEF_VIESSMANN_HORIZONTAL_SWING_MODE_AUTO=0,
+    HVACIR_DEF_VIESSMANN_HORIZONTAL_SWING_MODE_ALL,
+    HVACIR_DEF_VIESSMANN_HORIZONTAL_SWING_MODE_POS1,
+    HVACIR_DEF_VIESSMANN_HORIZONTAL_SWING_MODE_POS2,
+    HVACIR_DEF_VIESSMANN_HORIZONTAL_SWING_MODE_POS3,
+    HVACIR_DEF_VIESSMANN_HORIZONTAL_SWING_MODE_POS4,
+    HVACIR_DEF_VIESSMANN_HORIZONTAL_SWING_MODE_POS5,
+    HVACIR_DEF_VIESSMANN_HORIZONTAL_SWING_MODE_EXT=0x0C,
+    HVACIR_DEF_VIESSMANN_HORIZONTAL_SWING_MODE_EXT_MIDDLE=0x0D
+};
+
+enum
+{
+    HVACIR_DEF_VIESSMANN_VERTICAL_SWING_MODE_AUTO=0,
+    HVACIR_DEF_VIESSMANN_VERTICAL_SWING_MODE_ALL,
+    HVACIR_DEF_VIESSMANN_VERTICAL_SWING_MODE_POS1,
+    HVACIR_DEF_VIESSMANN_VERTICAL_SWING_MODE_POS2,
+    HVACIR_DEF_VIESSMANN_VERTICAL_SWING_MODE_POS3,
+    HVACIR_DEF_VIESSMANN_VERTICAL_SWING_MODE_POS4,
+    HVACIR_DEF_VIESSMANN_VERTICAL_SWING_MODE_POS5,
+    HVACIR_DEF_VIESSMANN_VERTICAL_SWING_MODE_LOW,
+    HVACIR_DEF_VIESSMANN_VERTICAL_SWING_MODE_MIDDLE=0x09,
+    HVACIR_DEF_VIESSMANN_VERTICAL_SWING_MODE_HIGH=0x0B
+};
+
+enum
+{
+    HVACIR_DEF_VIESSMANN_TEMPERATURE_VIEW_MODE_OFF=0,
+    HVACIR_DEF_VIESSMANN_TEMPERATURE_VIEW_MODE_1,
+    HVACIR_DEF_VIESSMANN_TEMPERATURE_VIEW_MODE_2,
+    HVACIR_DEF_VIESSMANN_TEMPERATURE_VIEW_MODE_3
+};
+
+enum
+{
+    HVACIR_DEF_VIESSMANN_SLEEP_MODE_DISABLED=0,
+    HVACIR_DEF_VIESSMANN_SLEEP_MODE_1,
+    HVACIR_DEF_VIESSMANN_SLEEP_MODE_2,
+    HVACIR_DEF_VIESSMANN_SLEEP_MODE_3
+};
+
+enum
+{
+    HVACIR_DEF_VIESSMANN_QUIET_MODE_OFF=0,
+    HVACIR_DEF_VIESSMANN_QUIET_MODE_AUTO,
+    HVACIR_DEF_QUIET_MODE_ON
+};
+
+
+//HavicIr.h
+enum
+{
+    HVACIR_DEF_MANUFACTURER_NULL,
+    HVACIR_DEF_MANUFACTURER_VIESSMANN
+};
+
+enum
+{
+    HVACIR_DEF_FAN_MODE=0,
+    HVACIR_DEF_SYS_MODE,
+    HVACIR_DEF_TIMER_MODE,
+    HVACIR_DEF_MODE_NUM
 };
 
 enum
@@ -55,12 +133,130 @@ enum
 
 enum
 {
-    HVACIR_DEF_QUIET_MODE_OFF=0,
-    HVACIR_DEF_QUIET_MODE_AUTO,
-    HVACIR_DEF_QUIET_MODE_ON
+    HVACIR_DEF_SYS_MODE_OFF=0,
+    HVACIR_DEF_SYS_MODE_AUTO=1,
+    HVACIR_DEF_SYS_MODE_COOLING=3,
+    HVACIR_DEF_SYS_MODE_HEATING=4,
+    HVACIR_DEF_SYS_MODE_FAN_ONLY=7,
+    HVACIR_DEF_SYS_MODE_DRY=8
+};
+
+enum
+{
+    HVACIR_DEF_OFF_CMD=0,
+    HVACIR_DEF_ON_CMD,
+    HVACIR_DEF_TOGGLE_CMD
+};
+
+enum
+{
+    HVACIR_DEF_SETPOINT_HEATING=0,
+    HVACIR_DEF_SETPOINT_HEATING_MIN,
+    HVACIR_DEF_SETPOINT_HEATING_MAX,
+    HVACIR_DEF_SETPOINT_COOLING,
+    HVACIR_DEF_SETPOINT_COOLING_MIN,
+    HVACIR_DEF_SETPOINT_COOLING_MAX,
+};
+
+enum
+{
+    HVACIR_DEF_FEATURE_SWING=0,
+    HVACIR_DEF_FEATURE_TURBO,
+    HVACIR_DEF_FEATURE_NUM
+};
+
+enum
+{
+    HVACIR_DEF_TIMER_ON=0,
+    HVACIR_DEF_TIMER_OFF
+};
+
+enum
+{
+    HVACIR_DEF_TIMER_MODE_DISABLED=0,
+    HVACIR_DEF_TIMER_MODE_OFF,
+    HVACIR_DEF_TIMER_MODE_ON,
+    HVACIR_DEF_TIMER_MODE_ON_OFF
 };
 
 //obj proveniente dall'alto (vedi file Settings.h)
+#define CONFIG_DEF_ENABLE_VIESSMANN_FEATURES
+#define CONFIG_DEF_ENABLE_SWING
+#define CONFIG_DEF_ENABLE_HEATING_SETPOINT
+#define CONFIG_DEF_ENABLE_HEATING_SETPOINT_LIMITS
+#define CONFIG_DEF_ENABLE_COOLING_SETPOINT_LIMITS
+#define CONFIG_DEF_ENABLE_TIMER
+
+
+
+#ifdef CONFIG_DEF_ENABLE_VIESSMANN_FEATURES
+typedef struct
+{
+    bool            hvacir_ifeel_enabled;
+    bool            hvacir_light_enabled;
+    bool            hvacir_purification_enabled;
+    bool            hvacir_sanitization_enabled;
+    bool            hvacir_wifi_enabled;
+    uint8_t         hvacir_quiet_mode;
+    uint8_t         hvacir_sleep_mode;
+    uint8_t         hvacir_horizontal_swing_mode;
+    uint8_t         hvacir_vertical_swing_mode;
+    uint8_t         hvacir_temperature_view_mode;
+    int16_t         hvacir_sleep3_setpoints[8];
+}settings_viessmann_List_t;
+#endif
+
+typedef struct
+{
+    #ifdef CONFIG_DEF_ENABLE_VIESSMANN_FEATURES
+    settings_viessmann_List_t   viessmann;
+    #endif
+}settings_manufacturers_List_t;
+#endif
+
+typedef union
+{
+    struct
+    {
+        uint32_t    turbo_enabled : 1;
+        #ifdef CONFIG_DEF_ENABLE_SWING
+        uint32_t    swing_enabled : 1;
+        #endif
+    }bits;
+
+    uint32_t mask;
+} settings_features_t;
+
+typedef struct
+{
+    settings_features_t hvacir_features;
+    bool                hvacir_is_on;
+    uint8_t             hvacir_fan_mode;
+    uint8_t             hvacir_sys_mode;
+    #ifdef CONFIG_DEF_ENABLE_HEATING_SETPOINT
+    int16_t             hvacir_ambient_heating_setpoint;
+    #ifdef CONFIG_DEF_ENABLE_HEATING_SETPOINT_LIMITS
+    int16_t             hvacir_ambient_heating_setpoint_min;
+    int16_t             hvacir_ambient_heating_setpoint_max;
+    #endif
+    #endif
+    int16_t             hvacir_ambient_cooling_setpoint;
+    #ifdef CONFIG_DEF_ENABLE_COOLING_SETPOINT_LIMITS
+    int16_t             hvacir_ambient_cooling_setpoint_min;
+    int16_t             hvacir_ambient_cooling_setpoint_max;
+    #endif
+    #ifdef CONFIG_DEF_ENABLE_TIMER
+    uint8_t             hvacir_timer_mode;
+    uint8_t             hvacir_on_timer_duration;
+    uint8_t             hvacir_off_timer_duration;
+    #endif
+
+    #ifdef SETTINGS_DEF_MANUFACTURERS_FEATURES_ENABLED
+    settings_manufacturers_List_t   ManufacturerSettigs;
+    #endif
+}settings_List_t;
+
+/*
 typedef struct
 {
     bool            hvacir_ifeel_enabled;
@@ -90,6 +286,7 @@ typedef struct
     uint8_t         hvacir_on_timer_duration;
     uint8_t         hvacir_off_timer_duration;
 }settings_List_t;
+*/
 
 /**********************************************************************************************************************
  *  4. Enum                                                                                                           *
@@ -119,7 +316,6 @@ enum
 	FAN_LIVELLO_4,
 	FAN_LIVELLO_5
 };
-
 
 enum
 {
@@ -263,7 +459,7 @@ enum
 typedef enum 
 {
 	DEF_MODEL_GREE,
-	DEF_MODEL_HAIER,
+	DEF_MODEL_HAIER,		//allo stato attuale delle cose haier non è supportato
 	
 	NO_MODEL
 }IR_MODEL;
@@ -273,10 +469,7 @@ typedef enum
 {
 	IR_CMD_ON,
 	IR_CMD_OFF,
-
 	IR_CMD_SET_MODE,
-
-
 	IR_CMD_SET_TEMPERATURE,
 	
 	//comandi richiesti dal cliente
@@ -326,8 +519,8 @@ typedef struct
 	//per pacchetto ID6
 	uint8_t sleepBitUno:1;
 	uint8_t quiet:2;
-	uint16_t timer_ON:11;
-	uint16_t timer_OFF:11;
+	uint16_t timer_ON_duration:11;
+	uint16_t timer_OFF_duration:11;
 	uint8_t timer_ON_enable:1;
 	uint8_t timer_OFF_enable:1;
 	
@@ -344,8 +537,6 @@ typedef struct
 	uint8_t sleep_3_ora_7_temperatura:4;
 	uint8_t sleep_3_ora_8_temperatura:4;
 }State;
-
-
 
 
 /**********************************************************************************************************************
@@ -377,27 +568,26 @@ State FromObjToState(settings_List_t* obj);
 uint8_t ConvertObjTemperatureToStateTemperature(int16_t objTemperature);
 
 //funzioni per costruire i byte 0, 1 e 2 secondo il pacchetto con ID 5
-uint8_t buildPacket5Byte0(State state);
-uint8_t buildPacket5Byte1(State state);
-uint8_t buildPacket5Byte2(State state);
+uint8_t buildPacket5Byte0(State* state);
+uint8_t buildPacket5Byte1(State* state);
+uint8_t buildPacket5Byte2(State* state);
 
 //funzioni per la costruzione dei pacchetti con l'ID indicato
-uint8_t* build_Gree_ID5_cb(State state);
-uint8_t* build_Gree_ID6_cb(State state);
-uint8_t* build_Gree_ID7_cb(State state);
-uint8_t* build_Gree_ID8_cb(State state);
-uint8_t* build_Gree_ID9_cb(State state);
-uint8_t* build_Gree_IDA_cb(State state);
+uint8_t* build_Gree_ID5_cb(State* state);
+uint8_t* build_Gree_ID6_cb(State* state);
+uint8_t* build_Gree_ID7_cb(State* state);
+uint8_t* build_Gree_ID8_cb(State* state);
+uint8_t* build_Gree_ID9_cb(State* state);
+uint8_t* build_Gree_IDA_cb();
+int8_t ComputeChecksum(int8_t b[]);
 
 //funzione che costruisce il frame completo (costituito solo da '1' e '0')
-int8_t* builtFrame(State state);
+int8_t* builtFrame(State* state);
 
 //funzione che crea il frame completo (con segnali di start, stop, pausa... dato il frame con soli '1' e '0' e il modello del telecomando)
 void IR_TRANSMIT(int8_t* p, IR_MODEL m);
 
-int8_t ComputeChecksum(int8_t b[]);
 void ConvertByteToBinary(int8_t* v, int position);
-int8_t* TurnOn_cb(State state);
 void LSB2MSB(int8_t* n);
 
 

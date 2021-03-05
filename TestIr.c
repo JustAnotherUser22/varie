@@ -30,33 +30,94 @@
 
 Table t[] = 
 {
-	{DEF_MODEL_GREE, IR_CMD_ON, &builtFrame},
-	{DEF_MODEL_GREE, IR_CMD_OFF, &placeholder},
-	{DEF_MODEL_HAIER, IR_CMD_ON, &placeholder},
-	{DEF_MODEL_HAIER, IR_CMD_OFF, &placeholder},
-	
 	//comandi chiesti dal cliente
-	{DEF_MODEL_GREE, IR_CMD_CHANGE_MODE, &builtFrame},
-	{DEF_MODEL_GREE, IR_CMD_CHANGE_FAN, &builtFrame},
-	{DEF_MODEL_GREE, IR_CMD_CHANGE_SET_POINT, &builtFrame},
-	{DEF_MODEL_GREE, IR_CMD_ON_OFF, &builtFrame},
-	{DEF_MODEL_GREE, IR_CMD_SET_QUIET_MODE, &builtFrame},
+	{DEF_MODEL_GREE, IR_CMD_CHANGE_MODE, 		&builtFrame},
+	{DEF_MODEL_GREE, IR_CMD_CHANGE_FAN, 		&builtFrame},
+	{DEF_MODEL_GREE, IR_CMD_CHANGE_SET_POINT, 	&builtFrame},
+	{DEF_MODEL_GREE, IR_CMD_ON_OFF, 			&builtFrame},
+	{DEF_MODEL_GREE, IR_CMD_SET_QUIET_MODE,		&builtFrame},
 	
+	/*
+	//Haier possiamo dimenticarlo...
 	{DEF_MODEL_HAIER, IR_CMD_CHANGE_MODE, &placeholder},
 	{DEF_MODEL_HAIER, IR_CMD_CHANGE_FAN, &placeholder},
 	{DEF_MODEL_HAIER, IR_CMD_CHANGE_SET_POINT, &placeholder},
 	{DEF_MODEL_HAIER, IR_CMD_ON_OFF, &placeholder},
 	{DEF_MODEL_HAIER, IR_CMD_SET_QUIET_MODE, &placeholder},
-	
-	
+	*/
 	
 	{NO_MODEL, NO_CMD, &placeholder},
+};
+
+/*
+settings_List_t TestObj = {
+		.hvacir_ifeel_enabled = 		true,
+		.hvacir_light_enabled = 		true,
+    	.hvacir_purification_enabled = 	true,
+    	.hvacir_sanitization_enabled = 	true,
+    	.hvacir_swing_enabled =			true,
+    	.hvacir_turbo_enabled =			true,
+    	.hvacir_wifi_enabled = 			true,
+    	.hvacir_fan_mode = 				HVACIR_DEF_FAN_MODE_LOW,
+    	//uint8_t         hvacir_fan_mode_sequence;	//parametro zigbee che non mi interessa
+    	.hvacir_horizontal_swing_mode = HVACIR_DEF_HORIZONTAL_SWING_MODE_ALL,
+    	.hvacir_quiet_mode = 			HVACIR_DEF_QUIET_MODE_OFF,
+    	.hvacir_sleep_mode = 			HVACIR_DEF_SLEEP_MODE_DISABLED,
+    	.hvacir_sys_mode = 				HVACIR_DEF_SYS_MODE_HEATING,
+    	//.hvacir_last_on_sys_mode =
+    	//.hvacir_temperature_view_mode =
+    	.hvacir_timer_mode = 			HVACIR_DEF_TIMER_MODE_DISABLED,
+    	.hvacir_vertical_swing_mode = 	HVACIR_DEF_VERTICAL_SWING_MODE_ALL,
+    	.hvacir_ambient_heating_setpoint = 2400,		//setpoint da usare in caso riscaldamento
+    	//int16_t         hvacir_ambient_heating_setpoint_min;	//non mi serve
+    	//int16_t         hvacir_ambient_heating_setpoint_max;	//non mi serve
+    	.hvacir_ambient_cooling_setpoint = 2600,		//setpoint da usare in caso raffreddamento e deumidificazione
+   		//int16_t         hvacir_ambient_cooling_setpoint_min;	//non mi serve
+    	//int16_t         hvacir_ambient_cooling_setpoint_max;	//non mi serve
+    	//.hvacir_sleep3_setpoints[8]
+    	//.hvacir_on_timer_duration;
+    	//.hvacir_off_timer_duration;
+    	
+	};
+*/
+
+settings_List_t TestObj  = {
+	.hvacir_swing_enabled=false,
+	.hvacir_turbo_enabled=false,
+	.hvacir_fan_mode=HVACIR_DEF_FAN_MODE_AUTO,
+	.hvacir_fan_mode_sequence=0,
+    .hvacir_sys_mode=HVACIR_DEF_SYS_MODE_COOLING,
+    .hvacir_last_on_sys_mode=HVACIR_DEF_SYS_MODE_AUTO,
+    .hvacir_timer_mode=HVACIR_DEF_TIMER_MODE_DISABLED,
+	.hvacir_ambient_heating_setpoint=2400,
+	.hvacir_ambient_heating_setpoint_min=700,
+	.hvacir_ambient_heating_setpoint_max=3200,
+	.hvacir_ambient_cooling_setpoint=2600,
+	.hvacir_ambient_cooling_setpoint_min=1600,
+	.hvacir_ambient_cooling_setpoint_max=3000,
+	.hvacir_on_timer_duration=0,
+	.hvacir_off_timer_duration=0,
+
+	.ManufacturerSettigs = {
+	    .viessmann = {
+            .hvacir_ifeel_enabled = false,
+            .hvacir_light_enabled = true,
+            .hvacir_purification_enabled = false,
+            .hvacir_sanitization_enabled = false,
+            .hvacir_wifi_enabled=true,
+            .hvacir_horizontal_swing_mode=HVACIR_DEF_VIESSMANN_VERTICAL_SWING_MODE_AUTO,
+            .hvacir_quiet_mode=HVACIR_DEF_VIESSMANN_QUIET_MODE_AUTO,
+            .hvacir_sleep_mode=HVACIR_DEF_VIESSMANN_SLEEP_MODE_DISABLED,
+            .hvacir_temperature_view_mode=HVACIR_DEF_VIESSMANN_TEMPERATURE_VIEW_MODE_1,
+            .hvacir_vertical_swing_mode=HVACIR_DEF_VIESSMANN_VERTICAL_SWING_MODE_AUTO,
+        }
+	}
 };
 
 
 State s = 
 {
-	.mode = MODE_REFFRESCAMENTO,
+	.mode = MODE_RISCALDAMENTO,
 	.power = POWER_OFF,
 	.fan = FAN_AUTO,
 	.swing = SWING_OFF,
@@ -81,8 +142,8 @@ State s =
 	//per pacchetto ID6
 	.sleepBitUno = 0,
 	.quiet = QUIET_OFF,
-	.timer_ON = 0X123,
-	.timer_OFF = 0X456,
+	.timer_ON_duration = 0X123,
+	.timer_OFF_duration = 0X456,
 	.timer_ON_enable = 0,
 	.timer_OFF_enable = 0,
 	
@@ -121,7 +182,8 @@ void IRTX_Send(IR_CMD cmd, IR_MODEL model, settings_List_t* obj)
 	{
 		if(t[counter].model == model && t[counter].command == cmd)
 		{
-			payload = t[counter].build_callback(s);
+			//payload = t[counter].build_callback(s);
+			payload = t[counter].build_callback(state);
 		}
 	}
 	
@@ -139,90 +201,76 @@ void IRTX_Send(IR_CMD cmd, IR_MODEL model, settings_List_t* obj)
  * 9. Global function definitions (private)                                                                           *
  **********************************************************************************************************************/
 
-
-
-
-
-
-
-////////////////////////////////////////////////////////////////////////////////////////
-//FUNZIONI LOCALI
-///////////////////////////////////////////////////////////////////////////////////////
-
 State FromObjToState(settings_List_t* obj)
 {
 	State s;
 	
+	#ifdef CONFIG_DEF_ENABLE_VIESSMANN_FEATURES
 	
-	if(obj->hvacir_ifeel_enabled)
-		s.ifeel = IFEEL_ON;
-	else
-		s.ifeel = IFEEL_OFF;
+	s.ifeel = obj->ManufacturerSettigs.viessmann.hvacir_ifeel_enabled;	
+	s.light = obj->ManufacturerSettigs.viessmann.hvacir_light_enabled;
+	s.modalitaDepurazione = obj->ManufacturerSettigs.viessmann.hvacir_purification_enabled;
+	s.modalitaSanificazione = obj->ManufacturerSettigs.viessmann.hvacir_sanitization_enabled;
+	s.wifi = obj->ManufacturerSettigs.viessmann.hvacir_wifi_enabled;	
+	s.paletteOrizzontali = obj->ManufacturerSettigs.viessmann.hvacir_horizontal_swing_mode;
+	s.paletteVerticali = obj->ManufacturerSettigs.viessmann.hvacir_vertical_swing_mode;
+	s.quiet = obj->ManufacturerSettigs.viessmann.hvacir_quiet_mode;
+	s.sleepBitZero = obj->ManufacturerSettigs.viessmann.hvacir_sleep_mode;
+	s.sleepBitUno = (obj->ManufacturerSettigs.viessmann.hvacir_sleep_mode) >> 1;
 	
-	if(obj->hvacir_light_enabled)
-		s.light = LIGHT_ON;
-	else
-		s.light = LIGHT_OFF;
+	s.sleep_3_ora_1_temperatura = ConvertObjTemperatureToStateTemperature(obj->ManufacturerSettigs.viessmann.hvacir_sleep3_setpoints[0]);
+	s.sleep_3_ora_2_temperatura = ConvertObjTemperatureToStateTemperature(obj->ManufacturerSettigs.viessmann.hvacir_sleep3_setpoints[1]);
+	s.sleep_3_ora_3_temperatura = ConvertObjTemperatureToStateTemperature(obj->ManufacturerSettigs.viessmann.hvacir_sleep3_setpoints[2]);
+	s.sleep_3_ora_4_temperatura = ConvertObjTemperatureToStateTemperature(obj->ManufacturerSettigs.viessmann.hvacir_sleep3_setpoints[3]);
+	s.sleep_3_ora_5_temperatura = ConvertObjTemperatureToStateTemperature(obj->ManufacturerSettigs.viessmann.hvacir_sleep3_setpoints[4]);
+	s.sleep_3_ora_6_temperatura = ConvertObjTemperatureToStateTemperature(obj->ManufacturerSettigs.viessmann.hvacir_sleep3_setpoints[5]);
+	s.sleep_3_ora_7_temperatura = ConvertObjTemperatureToStateTemperature(obj->ManufacturerSettigs.viessmann.hvacir_sleep3_setpoints[6]);
+	s.sleep_3_ora_8_temperatura = ConvertObjTemperatureToStateTemperature(obj->ManufacturerSettigs.viessmann.hvacir_sleep3_setpoints[7]);
 	
-	if(obj->hvacir_purification_enabled)
-		s.modalitaDepurazione = DEPURAZIONE_ON;
-	else
-		s.modalitaDepurazione = DEPURAZIONE_OFF;
-		
-	if(obj->hvacir_sanitization_enabled)
-		s.modalitaSanificazione = SANIFICAZIONE_ON;
-	else
-		s.modalitaSanificazione = SANIFICAZIONE_OFF;
-		
-	if(obj->hvacir_swing_enabled)
-		s.swing = SWING_ON;
-	else
-		s.swing = SWING_OFF;
+	//controlla come popolare questo campo
+	//s.temp = ??
 	
-	if(obj->hvacir_turbo_enabled)
-		s.turbo = TURBO_ON;
-	else
-		s.turbo = TURBO_OFF;
-		
-	if(obj->hvacir_wifi_enabled)
-		s.wifi = WIFI_ON;
-	else
-		s.wifi = WIFI_OFF;	
+	#endif
+	
+	
+	#ifdef CONFIG_DEF_ENABLE_SWING
+	s.swing = obj->hvacir_swing_enabled;
+	#endif
+	
+	s.turbo = obj->hvacir_turbo_enabled;
 		
 		
-
-	
-	
 	if (obj->hvacir_sys_mode == HVACIR_DEF_SYS_MODE_OFF)
-	{
-		s.mode = MODE_AUTO;
-		s.temperatura = ConvertObjTemperatureToStateTemperature(obj->hvacir_ambient_heating_setpoint);	//TODO: controlla questa conversione
-	}
+		s.power = POWER_OFF;
+	else
+		s.power = POWER_ON;
+	
+	
 	if (obj->hvacir_sys_mode == HVACIR_DEF_SYS_MODE_AUTO)
 	{
 		s.mode = MODE_AUTO;
 		//TODO: controlla che temperatura viene inviata in questo caso
 	}
-	if (obj->hvacir_sys_mode == HVACIR_DEF_SYS_MODE_COOLING)
+	else if (obj->hvacir_sys_mode == HVACIR_DEF_SYS_MODE_COOLING)
 	{
 		s.mode = MODE_REFFRESCAMENTO;
 		s.temperatura = ConvertObjTemperatureToStateTemperature(obj->hvacir_ambient_cooling_setpoint);	//TODO: controlla questa conversione
 	}
-	if (obj->hvacir_sys_mode == HVACIR_DEF_SYS_MODE_HEATING)
+	else if (obj->hvacir_sys_mode == HVACIR_DEF_SYS_MODE_HEATING)
 	{
 		s.mode = MODE_RISCALDAMENTO;
 		s.temperatura = ConvertObjTemperatureToStateTemperature(obj->hvacir_ambient_heating_setpoint);	//TODO: controlla questa conversione
 	}
-	if (obj->hvacir_sys_mode == HVACIR_DEF_SYS_MODE_FAN_ONLY)
+	else if (obj->hvacir_sys_mode == HVACIR_DEF_SYS_MODE_FAN_ONLY)
 	{
 		s.mode = MODE_VENTILAZIONE;
 		//in questo caso la temperatura inviata è un parametro inutile
 		s.temperatura = 0;
 	}
-	if (obj->hvacir_sys_mode == HVACIR_DEF_SYS_MODE_DRY)
+	else if (obj->hvacir_sys_mode == HVACIR_DEF_SYS_MODE_DRY)
 	{
 		s.mode = MODE_DEUMIDIFICAZIONE;
-		s.temperatura = ConvertObjTemperatureToStateTemperature(obj->hvacir_ambient_cooling_setpoint - 16);	//TODO: controlla questa conversione
+		s.temperatura = ConvertObjTemperatureToStateTemperature(obj->hvacir_ambient_cooling_setpoint);	//TODO: controlla questa conversione
 	}
 		
 		
@@ -232,67 +280,67 @@ State FromObjToState(settings_List_t* obj)
 		s.fan = FAN_LIVELLO_1;
 		s.fan_ID7 = FAN_LIVELLO_1;
 	}
-	if (obj->hvacir_fan_mode == HVACIR_DEF_FAN_MODE_MID)	
+	else if (obj->hvacir_fan_mode == HVACIR_DEF_FAN_MODE_MID)	
 	{
 		s.fan = FAN_LIVELLO_3;
 		s.fan_ID7 = FAN_LIVELLO_3;
 	}
-	if (obj->hvacir_fan_mode == HVACIR_DEF_FAN_MODE_HIGH)	
+	else if (obj->hvacir_fan_mode == HVACIR_DEF_FAN_MODE_HIGH)	
 	{
 		s.fan = FAN_LIVELLO_3;
 		s.fan_ID7 = FAN_LIVELLO_5;
 	}
-	if (obj->hvacir_fan_mode == HVACIR_DEF_FAN_MODE_AUTO)	
+	else if (obj->hvacir_fan_mode == HVACIR_DEF_FAN_MODE_AUTO)	
 	{
 		s.fan = FAN_AUTO;
 		s.fan_ID7 = FAN_AUTO;
 	}
-	if (obj->hvacir_fan_mode == HVACIR_DEF_FAN_MODE_SILENT)	
+	else if (obj->hvacir_fan_mode == HVACIR_DEF_FAN_MODE_SILENT)	
 	{
-		s.fan = 0;	//TBD
-		s.fan_ID7 = 0;	//TBD
+		//la modalità silent "sovrascrive" questi valori, quindi non importa veramente come gli setto
+		s.fan = FAN_AUTO;	//TBD
+		s.fan_ID7 = FAN_AUTO;	//TBD
 	}
 	
 	
-	//TODO: queste funzionano perchè sono stati usati gli stessi valori del protocollo per l'hvacir
-	//forse è meglio dividere i due casi, da concordare
-	s.paletteOrizzontali = obj->hvacir_horizontal_swing_mode;
-	s.paletteVerticali = obj->hvacir_vertical_swing_mode;
-	s.quiet = obj->hvacir_quiet_mode;
-	
-	s.sleepBitZero = obj->hvacir_sleep_mode;
-	s.sleepBitUno = obj->hvacir_sleep_mode >> 1;
 	
 	
 	
+	#ifdef CONFIG_DEF_ENABLE_TIMER
+	s.timer = obj->hvacir_timer_mode;
+	
+	//TODO: controlla dimensione di questi
+	s.timer_ON_duration = obj->hvacir_on_timer_duration;
+	s.timer_OFF_duration = obj->hvacir_off_timer_duration;
+	#endif
 	
 	return s;
 }
 
 uint8_t ConvertObjTemperatureToStateTemperature(int16_t objTemperature)
 {
-	return (uint8_t) (objTemperature - 16);
+	return (uint8_t) (objTemperature/100 - 16);
 }
 
 
-uint8_t buildPacket5Byte0(State state)
+uint8_t buildPacket5Byte0(State* state)
 {
-	return (state.sleepBitZero << 7) | (state.swing << 6) | (state.fan << 4) | (state.power << 3) | state.mode;
+	return (state->sleepBitZero << 7) | (state->swing << 6) | (state->fan << 4) | (state->power << 3) | state->mode;
 }
 
-uint8_t buildPacket5Byte1(State state)
+uint8_t buildPacket5Byte1(State* state)
 {
-	return (state.timer << 5) | (state.wifi << 4) | state.temperatura;
+	return (state->timer << 5) | (state->wifi << 4) | state->temperatura;
 }
 
-uint8_t buildPacket5Byte2(State state)
+uint8_t buildPacket5Byte2(State* state)
 {
-	return (state.modalitaSanificazione < 6) | (state.light << 5) | (state.turbo << 4) | state.TBD;
+	return (state->modalitaSanificazione < 6) | (state->light << 5) | (state->turbo << 4) | state->TBD;
 }
 
 
 
-uint8_t* build_Gree_ID5_cb(State state)
+uint8_t* build_Gree_ID5_cb(State* state)
 {
 	static uint8_t c[8];
 	
@@ -303,8 +351,8 @@ uint8_t* build_Gree_ID5_cb(State state)
 	c[0] = buildPacket5Byte0(state);
 	c[1] = buildPacket5Byte1(state);
 	c[2] = buildPacket5Byte2(state);
-	c[3] = (0x05 << 4) | (state.modalitaDepurazione << 1);
-	c[4] = (state.paletteOrizzontali << 4) | state.paletteVerticali;
+	c[3] = (0x05 << 4) | (state->modalitaDepurazione << 1);
+	c[4] = (state->paletteOrizzontali << 4) | state->paletteVerticali;
 	c[5] = 0x00;
 	c[6] = 0x00;
 	c[7] = ComputeChecksum(c) << 4;		
@@ -316,7 +364,7 @@ uint8_t* build_Gree_ID5_cb(State state)
 	return c;
 }
 
-uint8_t* build_Gree_ID6_cb(State state)
+uint8_t* build_Gree_ID6_cb(State* state)
 {
 	static uint8_t c[8];
 	
@@ -327,10 +375,10 @@ uint8_t* build_Gree_ID6_cb(State state)
 	c[0] = buildPacket5Byte0(state);
 	c[1] = buildPacket5Byte1(state);
 	c[2] = buildPacket5Byte2(state);
-	c[3] = (0x06 << 4) | (state.modalitaDepurazione << 1);
-	c[4] = state.timer_ON & 0x0FF;
-	c[5] = (state.timer_OFF_enable << 7) | (((state.timer_OFF & 0x700) >> 8) << 4) | (state.timer_ON_enable << 3) | ((state.timer_ON & 0x700) >> 8);
-	c[6] = state.timer_OFF & 0x0FF;
+	c[3] = (0x06 << 4) | (state->modalitaDepurazione << 1);
+	c[4] = state->timer_ON_duration & 0x0FF;
+	c[5] = (state->timer_OFF_enable << 7) | (((state->timer_OFF_duration & 0x700) >> 8) << 4) | (state->timer_ON_enable << 3) | ((state->timer_ON_duration & 0x700) >> 8);
+	c[6] = state->timer_OFF_duration & 0x0FF;
 	c[7] = ComputeChecksum(c) << 4;	
 		
 	printf("\n");
@@ -340,7 +388,7 @@ uint8_t* build_Gree_ID6_cb(State state)
 	return c;
 }
 
-uint8_t* build_Gree_ID7_cb(State state)
+uint8_t* build_Gree_ID7_cb(State* state)
 {
 	static uint8_t c[8];
 	
@@ -351,10 +399,10 @@ uint8_t* build_Gree_ID7_cb(State state)
 	c[0] = buildPacket5Byte0(state);
 	c[1] = buildPacket5Byte1(state);
 	c[2] = buildPacket5Byte2(state);
-	c[3] = (0x07 << 4) | (state.modalitaDepurazione << 1);
-	c[4] = (state.quiet << 6) | state.sleepBitUno;
-	c[5] = (state.sleep_3_ora_2_temperatura << 4) | state.sleep_3_ora_1_temperatura;
-	c[6] = state.fan_ID7 << 4;
+	c[3] = (0x07 << 4) | (state->modalitaDepurazione << 1);
+	c[4] = (state->quiet << 6) | state->sleepBitUno;
+	c[5] = (state->sleep_3_ora_2_temperatura << 4) | state->sleep_3_ora_1_temperatura;
+	c[6] = state->fan_ID7 << 4;
 	c[7] = ComputeChecksum(c) << 4;	
 	
 	printf("\n");
@@ -364,7 +412,7 @@ uint8_t* build_Gree_ID7_cb(State state)
 	return c;
 }
 
-uint8_t* build_Gree_ID8_cb(State state)
+uint8_t* build_Gree_ID8_cb(State* state)
 {
 	static uint8_t c[8];
 	
@@ -375,10 +423,10 @@ uint8_t* build_Gree_ID8_cb(State state)
 	c[0] = buildPacket5Byte0(state);
 	c[1] = buildPacket5Byte1(state);
 	c[2] = buildPacket5Byte2(state);
-	c[3] = (0x08 << 4) | (state.modalitaDepurazione << 1);
-	c[4] = (state.sleep_3_ora_4_temperatura << 4) | state.sleep_3_ora_3_temperatura;
-	c[5] = (state.sleep_3_ora_6_temperatura << 4) | state.sleep_3_ora_5_temperatura;
-	c[6] = (state.sleep_3_ora_8_temperatura << 4) | state.sleep_3_ora_7_temperatura;
+	c[3] = (0x08 << 4) | (state->modalitaDepurazione << 1);
+	c[4] = (state->sleep_3_ora_4_temperatura << 4) | state->sleep_3_ora_3_temperatura;
+	c[5] = (state->sleep_3_ora_6_temperatura << 4) | state->sleep_3_ora_5_temperatura;
+	c[6] = (state->sleep_3_ora_8_temperatura << 4) | state->sleep_3_ora_7_temperatura;
 	c[7] = ComputeChecksum(c) << 4;	
 	
 	printf("\n");
@@ -388,7 +436,7 @@ uint8_t* build_Gree_ID8_cb(State state)
 	return c;
 }
 
-uint8_t* build_Gree_IDA_cb(State state)
+uint8_t* build_Gree_IDA_cb()
 {
 	static uint8_t c[8];
 	
@@ -453,29 +501,7 @@ void IR_TRANSMIT(int8_t* p, IR_MODEL m)
 		
 		printf("\n\n");
 		for(i = 0; i < packets; i++)
-			printMyArray(&totalFrame[i * 70]);		//8byte = 64 bit, + altri 6 di preambolo, pausa, end '0' e '1'
-		
-		
-		/*totalFrame[totalFrameCounter++] = BSP_IR_TX_PREAMBLE;
-		
-		ConvertByte(p[0]);
-		ConvertByte(p[1]);
-		ConvertByte(p[2]);
-		ConvertByte(p[3]);
-		
-		totalFrame[totalFrameCounter++] = BSP_IR_TX_BIT0;
-		totalFrame[totalFrameCounter++] = BSP_IR_TX_BIT1;
-		totalFrame[totalFrameCounter++] = BSP_IR_TX_BIT0;	
-		totalFrame[totalFrameCounter++] = BSP_IR_TX_PAUSE;
-		
-		ConvertByte(p[4]);
-		ConvertByte(p[5]);
-		ConvertByte(p[6]);
-		ConvertByte(p[7]);
-		
-		totalFrame[totalFrameCounter++] = BSP_IR_TX_END;
-		
-		printAllData();*/
+			printMyArray(&totalFrame[i * 70]);		//8byte = 64 bit, + altri 6 di preambolo, pausa, end '0' e '1', quindi in totale sono 70 valori
 	}
 	else if(m == DEF_MODEL_HAIER)
 	{
@@ -505,31 +531,6 @@ void ConvertByteToBinary(int8_t* v, int position)
 		}
 	}
 }
-
-/*void ConvertByte(int8_t b)
-{
-	uint8_t i = 8;	
-	uint8_t bin[8];
-	uint8_t cnt = 0;
-	
-	for(i = 0; i < 8; i++)
-		bin[i] = 0;
-	
-	uint8_t mask = 0x01;
-	for(cnt = 0; cnt < 8; cnt++)
-	{
-		printf("%x\n", mask);
-		if( ( b & mask) == 0)
-			bin[7-cnt] = BSP_IR_TX_BIT0;
-		else
-			bin[7-cnt] = BSP_IR_TX_BIT1;
-		mask = mask << 1;
-		i++;
-	}	
-	
-	for(i = 0; i < 8; i++)
-		printf("%d ", bin[i]);
-}*/
 
 
 /*
@@ -561,40 +562,8 @@ packet ID 0x07 -> sempre inviato
 packet ID 0x08 -> inviato solo in modalità sleep 3
 packet ID 0x0A -> sempre inviato (ultimo pacchetto) (??????????????)
 */
-int8_t* builtFrame(State state)
+int8_t* builtFrame(State* state)
 {
-	/*
-	int8_t *firstFrame = build_Gree_ID5_cb(state);
-	int8_t *secondFrame = build_Gree_ID7_cb(state);
-	//int8_t* lastFrame = build_Gree_IDA_cb(state);
-
-	//dichiarazione dell'array che comprende i frame creati sopra
-	#define LENGTH 16
-	int8_t* totalFrame = malloc(LENGTH); //TBD
-	
-	int i = 0;
-	int j = 0;
-	
-	for(j = 0; j < 8; j++)
-	{
-		totalFrame[i] = firstFrame[j];
-		i++;
-	}
-	
-	for(j = 0; j < 8; j++)
-	{
-		totalFrame[i] = secondFrame[j];
-		i++;
-	}
-	
-	printf("\n");
-	for(i = 0; i < 16; i++)
-		printf("%x ",totalFrame[i]);
-	
-	return totalFrame;
-	*/
-	//////////////////////////////////////
-	
 	/*		
 	controlla che il comando sia effettivamente supportato, altrimenti ritorna errore.
 	se è supportato costruisci i frame corrispondenti, per es:
@@ -623,13 +592,13 @@ int8_t* builtFrame(State state)
 	frame7 = build_Gree_ID7_cb(state);
 	totalLength += 8;
 	
-	if(state.timer != NO_TIMER)
+	if(state->timer != NO_TIMER)
     {
 		frame6 = build_Gree_ID6_cb(state);
 		totalLength += 8;
 	}	
 	
-	if( (state.sleepBitZero == 1) && (state.sleepBitUno == 1) &&	//se sono in sleep 3
+	if( (state->sleepBitZero == 1) && (state->sleepBitUno == 1) &&	//se sono in sleep 3
 		(cmd != IR_CMD_OFF) && 										//e non ho premuto il pulsante per spegnere il dispositivo
 		(cmd != IR_CMD_SET_MODE) )									//e non sto cambiando modalità
 	{
@@ -639,49 +608,41 @@ int8_t* builtFrame(State state)
 	
 	payloadSize = totalLength;
 	
-	int8_t* totalFrame = malloc(totalLength * sizeof(int8_t));
+	//int8_t* totalFrame = malloc(totalLength * sizeof(int8_t));
+	uint8_t* totalData = malloc(totalLength * sizeof(uint8_t));
 	//static int8_t totalFrame[totalLength];
 	
-	int i = 0;
-	int j = 0;
+	int8_t i = 0;
+	int8_t j = 0;
 	
 	if(frame5 != NULL)
 		for(j = 0; j < 8; j++)
-			totalFrame[i++] = frame5[j];
+			totalData[i++] = frame5[j];
 	
 	if(frame6 != NULL)
 		for(j = 0; j < 8; j++)
-			totalFrame[i++] = frame6[j];
+			totalData[i++] = frame6[j];
 	
 	if(frame7 != NULL)
 		for(j = 0; j < 8; j++)
-			totalFrame[i++] = frame7[j];
+			totalData[i++] = frame7[j];
 	
 	if(frame8 != NULL)
 		for(j = 0; j < 8; j++)
-			totalFrame[i++] = frame8[j];
+			totalData[i++] = frame8[j];
 	
 	if(frameA != NULL)
 		for(j = 0; j < 8; j++)
-			totalFrame[i++] = frameA[j];
+			totalData[i++] = frameA[j];
 			
 	printf("\n\n");
 		for(i = 0; i < totalLength; i++)
-			printf("%02x ",totalFrame[i]);
+			printf("%02x ",totalData[i]);
 	
-	return totalFrame;	
+	return totalData;	
 }
 
 
-//funzione che si occupa di creare il pacchetto nel caso di accensione
-int8_t* TurnOn_cb(State state)
-{
-	//TODO: eventuale controllo nel caso in cui il nuovo stato sia uguale a quello attuale?
-	
-	state.power = POWER_OFF;
-	int8_t* c = builtFrame(state);
-	return c;
-}
 
  void LSB2MSB(int8_t* n)
  {
@@ -720,39 +681,9 @@ int8_t* TurnOn_cb(State state)
  
 void TestObjToState()
 {
-	settings_List_t obj = {
-		.hvacir_ifeel_enabled = true,
-		.hvacir_light_enabled = true,
-    	.hvacir_purification_enabled = true,
-    	.hvacir_sanitization_enabled = true,
-    	.hvacir_swing_enabled = true,
-    	.hvacir_turbo_enabled = true,
-    	.hvacir_wifi_enabled = true,
-    	.hvacir_fan_mode = HVACIR_DEF_FAN_MODE_LOW,
-    	//uint8_t         hvacir_fan_mode_sequence;	//parametro zigbee che non mi interessa
-    	/*.hvacir_horizontal_swing_mode = 
-    	.hvacir_quiet_mode =
-    	.hvacir_sleep_mode =
-    	.hvacir_sys_mode =
-    	.hvacir_last_on_sys_mode =
-    	.hvacir_temperature_view_mode =
-    	.hvacir_timer_mode =
-    	.hvacir_vertical_swing_mode =
-    	.hvacir_ambient_heating_setpoint = 30,		//setpoint da usare in caso riscaldamento
-    //int16_t         hvacir_ambient_heating_setpoint_min;	//non mi serve
-    //int16_t         hvacir_ambient_heating_setpoint_max;	//non mi serve
-    	.hvacir_ambient_cooling_setpoint = 20,		//setpoint da usare in caso raffreddamento e deumidificazione
-    //int16_t         hvacir_ambient_cooling_setpoint_min;	//non mi serve
-    //int16_t         hvacir_ambient_cooling_setpoint_max;	//non mi serve
-    	//.hvacir_sleep3_setpoints[8]
-    	//.hvacir_on_timer_duration;
-    	//.hvacir_off_timer_duration;
-    	*/
-	};
-	
 	State localState;
 	//PrintState(&localState);
-	localState = FromObjToState(&obj);
+	localState = FromObjToState(&TestObj);
 	PrintState(&localState);
 }
 
@@ -782,8 +713,8 @@ void PrintState(State* state)
 	
 	printf("sleepBitUno:      %02X\n", state->sleepBitUno);
 	printf("quiet:            %02X\n", state->quiet);
-	printf("timer_ON:         %02X\n", state->timer_ON);
-	printf("timer_OFF:        %02X\n", state->timer_OFF);
+	printf("timer_ON_duration:%02X\n", state->timer_ON_duration);
+	printf("timer_OFF_duration:%02X\n", state->timer_OFF_duration);
 	printf("timer_ON_enable:  %02X\n", state->timer_ON_enable);
 	printf("timer_OFF_enable: %02X\n", state->timer_OFF_enable);
 	
@@ -1311,7 +1242,7 @@ void printMyArray(int8_t* v)
 			tmp |= mask;
 		mask <<= 1;
 	}
-	printf ("0x%2X", tmp);
+	printf ("0x%02X", tmp);
 	
 	
 	
@@ -1329,7 +1260,7 @@ void printMyArray(int8_t* v)
 			tmp |= mask;
 		mask <<= 1;
 	}
-	printf ("0x%2X", tmp);
+	printf ("0x%02X", tmp);
 	
 	printf("\n");
 	
@@ -1344,7 +1275,7 @@ void printMyArray(int8_t* v)
 			tmp |= mask;
 		mask <<= 1;
 	}
-	printf ("0x%2X", tmp);	
+	printf ("0x%02X", tmp);	
 	
 	
 	printf("\n");
@@ -1360,7 +1291,7 @@ void printMyArray(int8_t* v)
 			tmp |= mask;
 		mask <<= 1;
 	}
-	printf ("0x%2X", tmp);
+	printf ("0x%02X", tmp);
 	
 	printf("\n");
 	
@@ -1380,7 +1311,7 @@ void printMyArray(int8_t* v)
 			tmp |= mask;
 		mask <<= 1;
 	}
-	printf ("0x%2X", tmp);
+	printf ("0x%02X", tmp);
 	
 	printf("\n");
 	
@@ -1395,7 +1326,7 @@ void printMyArray(int8_t* v)
 			tmp |= mask;
 		mask <<= 1;
 	}
-	printf ("0x%2X", tmp);
+	printf ("0x%02X", tmp);
 	
 	printf("\n");
 	
@@ -1410,7 +1341,7 @@ void printMyArray(int8_t* v)
 			tmp |= mask;
 		mask <<= 1;
 	}
-	printf ("0x%2X", tmp);
+	printf ("0x%02X", tmp);
 	
 	printf("\n");
 	
@@ -1425,11 +1356,11 @@ void printMyArray(int8_t* v)
 			tmp |= mask;
 		mask <<= 1;
 	}
-	printf ("0x%2X", tmp);
+	printf ("0x%02X", tmp);
 	
 	printf("\n");
 		
-	printf("%d\n", v[69]);	//end
+	printf("%d\n\n", v[69]);	//end
 }
 
 
