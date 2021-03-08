@@ -82,17 +82,20 @@ settings_List_t TestObj = {
 */
 
 settings_List_t TestObj  = {
-	.hvacir_swing_enabled=false,
-	.hvacir_turbo_enabled=false,
+    .hvacir_features = {
+      .bits = {
+          .swing_enabled=0,
+          .turbo_enabled=0
+      }
+    },
+	.hvacir_is_on=false,
 	.hvacir_fan_mode=HVACIR_DEF_FAN_MODE_AUTO,
-	.hvacir_fan_mode_sequence=0,
-    .hvacir_sys_mode=HVACIR_DEF_SYS_MODE_COOLING,
-    .hvacir_last_on_sys_mode=HVACIR_DEF_SYS_MODE_AUTO,
+    .hvacir_sys_mode=HVACIR_DEF_SYS_MODE_AUTO,
     .hvacir_timer_mode=HVACIR_DEF_TIMER_MODE_DISABLED,
-	.hvacir_ambient_heating_setpoint=2400,
-	.hvacir_ambient_heating_setpoint_min=700,
-	.hvacir_ambient_heating_setpoint_max=3200,
-	.hvacir_ambient_cooling_setpoint=2600,
+	.hvacir_ambient_heating_setpoint=2800,
+	.hvacir_ambient_heating_setpoint_min=1600,
+	.hvacir_ambient_heating_setpoint_max=3000,
+	.hvacir_ambient_cooling_setpoint=2500,
 	.hvacir_ambient_cooling_setpoint_min=1600,
 	.hvacir_ambient_cooling_setpoint_max=3000,
 	.hvacir_on_timer_duration=0,
@@ -100,15 +103,19 @@ settings_List_t TestObj  = {
 
 	.ManufacturerSettigs = {
 	    .viessmann = {
-            .hvacir_ifeel_enabled = false,
-            .hvacir_light_enabled = true,
-            .hvacir_purification_enabled = false,
-            .hvacir_sanitization_enabled = false,
-            .hvacir_wifi_enabled=true,
+	        .hvacir_features = {
+	           .bits = {
+	               .ifeel_enabled=0,
+	               .light_enabled=1,
+	               .purification_enabled=0,
+	               .sanitization_enabled=1,
+	               .wifi_enabled=0,
+	           }
+	        },
             .hvacir_horizontal_swing_mode=HVACIR_DEF_VIESSMANN_VERTICAL_SWING_MODE_AUTO,
             .hvacir_quiet_mode=HVACIR_DEF_VIESSMANN_QUIET_MODE_AUTO,
             .hvacir_sleep_mode=HVACIR_DEF_VIESSMANN_SLEEP_MODE_DISABLED,
-            .hvacir_temperature_view_mode=HVACIR_DEF_VIESSMANN_TEMPERATURE_VIEW_MODE_1,
+            .hvacir_temperature_view_mode=HVACIR_DEF_VIESSMANN_TEMPERATURE_VIEW_MODE_OFF,
             .hvacir_vertical_swing_mode=HVACIR_DEF_VIESSMANN_VERTICAL_SWING_MODE_AUTO,
         }
 	}
@@ -207,11 +214,11 @@ State FromObjToState(settings_List_t* obj)
 	
 	#ifdef CONFIG_DEF_ENABLE_VIESSMANN_FEATURES
 	
-	s.ifeel = obj->ManufacturerSettigs.viessmann.hvacir_ifeel_enabled;	
-	s.light = obj->ManufacturerSettigs.viessmann.hvacir_light_enabled;
-	s.modalitaDepurazione = obj->ManufacturerSettigs.viessmann.hvacir_purification_enabled;
-	s.modalitaSanificazione = obj->ManufacturerSettigs.viessmann.hvacir_sanitization_enabled;
-	s.wifi = obj->ManufacturerSettigs.viessmann.hvacir_wifi_enabled;	
+	s.ifeel = obj->ManufacturerSettigs.viessmann.hvacir_features.bits.ifeel_enabled;
+	s.light = obj->ManufacturerSettigs.viessmann.hvacir_features.bits.light_enabled;
+	s.modalitaDepurazione = obj->ManufacturerSettigs.viessmann.hvacir_features.bits.purification_enabled;
+	s.modalitaSanificazione = obj->ManufacturerSettigs.viessmann.hvacir_features.bits.sanitization_enabled;
+	s.wifi = obj->ManufacturerSettigs.viessmann.hvacir_features.bits.wifi_enabled;
 	s.paletteOrizzontali = obj->ManufacturerSettigs.viessmann.hvacir_horizontal_swing_mode;
 	s.paletteVerticali = obj->ManufacturerSettigs.viessmann.hvacir_vertical_swing_mode;
 	s.quiet = obj->ManufacturerSettigs.viessmann.hvacir_quiet_mode;
@@ -227,23 +234,22 @@ State FromObjToState(settings_List_t* obj)
 	s.sleep_3_ora_7_temperatura = ConvertObjTemperatureToStateTemperature(obj->ManufacturerSettigs.viessmann.hvacir_sleep3_setpoints[6]);
 	s.sleep_3_ora_8_temperatura = ConvertObjTemperatureToStateTemperature(obj->ManufacturerSettigs.viessmann.hvacir_sleep3_setpoints[7]);
 	
-	//controlla come popolare questo campo
-	//s.temp = ??
+	s.temp = obj->ManufacturerSettigs.viessmann.hvacir_temperature_view_mode;
 	
 	#endif
 	
 	
 	#ifdef CONFIG_DEF_ENABLE_SWING
-	s.swing = obj->hvacir_swing_enabled;
+	s.swing = obj->hvacir_features.bits.swing_enabled;
 	#endif
 	
-	s.turbo = obj->hvacir_turbo_enabled;
+	s.turbo = obj->hvacir_features.bits.turbo_enabled;
 		
 		
-	if (obj->hvacir_sys_mode == HVACIR_DEF_SYS_MODE_OFF)
-		s.power = POWER_OFF;
-	else
+	if (obj->hvacir_is_on)
 		s.power = POWER_ON;
+	else
+		s.power = POWER_OFF;
 	
 	
 	if (obj->hvacir_sys_mode == HVACIR_DEF_SYS_MODE_AUTO)

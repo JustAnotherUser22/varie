@@ -186,25 +186,33 @@ enum
 #define CONFIG_DEF_ENABLE_HEATING_SETPOINT_LIMITS
 #define CONFIG_DEF_ENABLE_COOLING_SETPOINT_LIMITS
 #define CONFIG_DEF_ENABLE_TIMER
+#define SETTINGS_DEF_MANUFACTURERS_FEATURES_ENABLED
 
+typedef union
+{
+    struct
+    {
+        uint32_t    ifeel_enabled           : 1;
+        uint32_t    light_enabled           : 1;
+        uint32_t    purification_enabled    : 1;
+        uint32_t    sanitization_enabled    : 1;
+        uint32_t    wifi_enabled            : 1;
+    }bits;
 
+    uint32_t mask;
+} settings_viessmann_features_t;
 
-#ifdef CONFIG_DEF_ENABLE_VIESSMANN_FEATURES
 typedef struct
 {
-    bool            hvacir_ifeel_enabled;
-    bool            hvacir_light_enabled;
-    bool            hvacir_purification_enabled;
-    bool            hvacir_sanitization_enabled;
-    bool            hvacir_wifi_enabled;
-    uint8_t         hvacir_quiet_mode;
-    uint8_t         hvacir_sleep_mode;
-    uint8_t         hvacir_horizontal_swing_mode;
-    uint8_t         hvacir_vertical_swing_mode;
-    uint8_t         hvacir_temperature_view_mode;
-    int16_t         hvacir_sleep3_setpoints[8];
+    settings_viessmann_features_t   hvacir_features;
+    uint8_t                         hvacir_quiet_mode;
+    uint8_t                         hvacir_sleep_mode;
+    uint8_t                         hvacir_horizontal_swing_mode;
+    uint8_t                         hvacir_vertical_swing_mode;
+    uint8_t                         hvacir_temperature_view_mode;
+    int16_t                         hvacir_sleep3_setpoints[8];
 }settings_viessmann_List_t;
-#endif
+
 
 typedef struct
 {
@@ -212,7 +220,7 @@ typedef struct
     settings_viessmann_List_t   viessmann;
     #endif
 }settings_manufacturers_List_t;
-#endif
+
 
 typedef union
 {
@@ -255,38 +263,6 @@ typedef struct
     settings_manufacturers_List_t   ManufacturerSettigs;
     #endif
 }settings_List_t;
-
-/*
-typedef struct
-{
-    bool            hvacir_ifeel_enabled;
-    bool            hvacir_light_enabled;
-    bool            hvacir_purification_enabled;
-    bool            hvacir_sanitization_enabled;
-    bool            hvacir_swing_enabled;
-    bool            hvacir_turbo_enabled;
-    bool            hvacir_wifi_enabled;
-    uint8_t         hvacir_fan_mode;
-    uint8_t         hvacir_fan_mode_sequence;	//parametro zigbee che non mi interessa
-    uint8_t         hvacir_horizontal_swing_mode;
-    uint8_t         hvacir_quiet_mode;
-    uint8_t         hvacir_sleep_mode;
-    uint8_t         hvacir_sys_mode;
-    uint8_t         hvacir_last_on_sys_mode;
-    uint8_t         hvacir_temperature_view_mode;
-    uint8_t         hvacir_timer_mode;
-    uint8_t         hvacir_vertical_swing_mode;
-    int16_t         hvacir_ambient_heating_setpoint;		//setpoint da usare in caso riscaldamento
-    int16_t         hvacir_ambient_heating_setpoint_min;	//non mi serve
-    int16_t         hvacir_ambient_heating_setpoint_max;	//non mi serve
-    int16_t         hvacir_ambient_cooling_setpoint;		//setpoint da usare in caso raffreddamento e deumidificazione
-    int16_t         hvacir_ambient_cooling_setpoint_min;	//non mi serve
-    int16_t         hvacir_ambient_cooling_setpoint_max;	//non mi serve
-    int16_t         hvacir_sleep3_setpoints[8];
-    uint8_t         hvacir_on_timer_duration;
-    uint8_t         hvacir_off_timer_duration;
-}settings_List_t;
-*/
 
 /**********************************************************************************************************************
  *  4. Enum                                                                                                           *
